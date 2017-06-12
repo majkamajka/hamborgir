@@ -1,0 +1,128 @@
+* {
+    box-sizing: border-box;
+    font-family: "Emulogic", "Courier New", sans-serif;
+}
+
+@font-face {
+    font-family: Emulogic;
+    src: url("../fonts/emulogic.ttf");
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: black;
+}
+
+section#score {
+  width: 100%;
+}
+
+#board {
+  width: 640px;
+  height: 640px;
+  margin: 1em auto;
+}
+
+#board  > div {
+  border: 1px solid black;
+  float: left;
+  width: 64px;
+  height: 64px;
+  background-color: white;
+}
+
+
+section#score div {
+  width: 10em;
+  height: 5em;
+  text-align: center;
+  padding: 0.5em;
+  /*background-color: rgba(211,211,211, 0.75);
+  border: 1px solid lightgray;
+  border-radius: 1px;
+  box-shadow: 1px 1px 5px 1px lightgray;*/
+  font-size: 20px;
+  margin: 0.5em auto;
+  color: white;
+}
+
+
+
+
+.furry {
+  background-image: url('../images/furry.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.coin {
+  background-image: url('../images/coin.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+section#over {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  z-index: 1;
+  padding: 10px;
+  background-color: black;
+}
+
+/*section#over pre { - ???????
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+  font-size: 10px;
+  font-weight: bolder;
+  color: brown;
+}*/
+
+.invisible {
+  display: none;
+}
+
+.game-over {
+  text-align: center;
+  margin: 40vh auto;
+  font-size: 24px;
+  color: white;
+}
+
+.game-over :first-child {
+  font-size: 28px;
+}
+
+section#start-game {
+  text-align: center;
+  margin: 0 auto;
+  color: white;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  z-index: 1;
+  padding: 10px;
+  background-color: black;
+}
+
+.start {
+  margin: 40vh auto;
+}
+
+#start-game .start :first-child {
+  font-size: 30px;
+}
+
+#start-game .start :nth-child(2) {
+  font-size: 24px;
+}
+
+button {
+  margin-top: 30px;
+  font-size: 24px;
+}

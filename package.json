@@ -1,0 +1,22 @@
+{
+  "name": "furrygame",
+  "version": "1.0.0",
+  "description": "## Przygotowanie",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/majkamajka/WAR_FRO_S_19_Free_Week_Workshop.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/majkamajka/WAR_FRO_S_19_Free_Week_Workshop/issues"
+  },
+  "homepage": "https://github.com/majkamajka/WAR_FRO_S_19_Free_Week_Workshop#readme",
+  "devDependencies": {
+    "webpack": "^3.0.0-rc.1"
+  }
+}
