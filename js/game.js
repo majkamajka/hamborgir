@@ -63,6 +63,8 @@ function Game () {
 
   this.checkCoinCollision = function () {
     if (this.furry.x === this.coin.x && this.furry.y === this.coin.y) {
+      var audio = new Audio('sounds/coin.wav');
+      audio.play();
       this.board[this.index (this.coin.x, this.coin.y)].classList.remove('coin');
       this.score = this.score + 1;
       document.querySelector("#score strong").innerText = this.score;
@@ -73,6 +75,8 @@ function Game () {
 
   this.gameOver = function () {
     if (this.furry.x < 0 || this.furry.x > 9 || this.furry.y < 0 || this.furry.y > 9) {
+      var audio = new Audio('sounds/gameover.wav');
+      audio.play();
     // nadaję stałe wartości x i y furry'emu przy game over, żeby nie przeskakiwał do następnej / poprzedniej linijki przy game over przy dotknięciu ściany left / right, tak jak dzieje się to w zaprezentowanym przykładzie
       this.furry.x = -1;
       this.furry.y = -1;

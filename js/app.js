@@ -7,6 +7,8 @@ document.addEventListener("DOMContentLoaded", function(){
   document.querySelector("button#start").addEventListener("click", function () {
 
     document.querySelector("#start-game").classList.add("invisible");
+    var audio = new Audio('sounds/start.wav');
+    audio.play();
     var game = new Game ();
     game.showFurry();
     game.showCoin();
@@ -17,6 +19,8 @@ document.addEventListener("DOMContentLoaded", function(){
   });
 
   document.querySelector("button.play-again").addEventListener("click", function () {
+    var audio = new Audio('sounds/start.wav');
+    audio.play();
     game = new Game ();
     game.showFurry();
     game.showCoin();
