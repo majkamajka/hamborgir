@@ -138,6 +138,24 @@ document.addEventListener("DOMContentLoaded", function () {
         visibleCat.classList.remove('cat');
       }
     }, {
+      key: "turnCat",
+      value: function turnCat(event) {
+        switch (event.which) {
+          case 37:
+            this.cat.direction = 'left';
+            break;
+          case 38:
+            this.cat.direction = 'up';
+            break;
+          case 39:
+            this.cat.direction = 'right';
+            break;
+          case 40:
+            this.cat.direction = 'down';
+            break;
+        };
+      }
+    }, {
       key: "startGame",
       value: function startGame() {
         var that = this;
@@ -156,6 +174,9 @@ document.addEventListener("DOMContentLoaded", function () {
   newGame.showCat();
   newGame.showHamborgir();
   newGame.startGame();
+  document.addEventListener('keydown', function (event) {
+    newGame.turnCat(event);
+  });
 });
 
 /***/ }),

@@ -59,6 +59,24 @@ class Game {
   }
 
 
+  turnCat(event) {
+    switch (event.which) {
+      case 37:
+        this.cat.direction = 'left';
+        break;
+      case 38:
+        this.cat.direction = 'up';
+        break;
+      case 39:
+        this.cat.direction = 'right';
+        break;
+      case 40:
+        this.cat.direction = 'down';
+        break;
+    };
+  }
+
+
 
   startGame() {
     const that = this;
@@ -75,7 +93,13 @@ class Game {
 
 let newGame = new Game();
 
+
+
 newGame.showCat();
 newGame.showHamborgir();
 newGame.startGame();
+document.addEventListener('keydown', function(event){
+  newGame.turnCat(event);
+});
+
 });
