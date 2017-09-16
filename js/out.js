@@ -74,69 +74,75 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener('DOMContentLoaded', function () {
   __webpack_require__(1);
 
-  var Cat = function Cat(x, y, direction) {
+  var Cat = function Cat() {
     _classCallCheck(this, Cat);
 
-    this.x = 0, this.y = 0, this.direction = "right";
+    this.x = 0;
+    this.y = 0;
+    this.direction = 'right';
   };
 
-  ;
-
-  var Hamborgir = function Hamborgir(x, y) {
+  var Hamborgir = function Hamborgir() {
     _classCallCheck(this, Hamborgir);
 
-    this.x = Math.floor(Math.random() * 10), this.y = Math.floor(Math.random() * 10);
+    this.x = Math.floor(Math.random() * 10);
+    this.y = Math.floor(Math.random() * 10);
   };
 
   var Game = function () {
     function Game() {
       _classCallCheck(this, Game);
 
-      this.board = document.querySelectorAll('#board div'), this.cat = new Cat(), this.hamborgir = new Hamborgir(), this.score = 0;
+      this.board = document.querySelectorAll('#board div');
+      this.cat = new Cat();
+      this.hamborgir = new Hamborgir();
+      this.score = 0;
     }
 
     _createClass(Game, [{
-      key: "getIndex",
+      key: 'getIndex',
       value: function getIndex(x, y) {
         return x + y * 10;
       }
     }, {
-      key: "showCat",
+      key: 'showCat',
       value: function showCat() {
-        this.board[this.getIndex(this.cat.x, this.cat.y)].classList.add('cat');
+        if (this.board[this.getIndex(this.cat.x, this.cat.y)]) {
+          this.board[this.getIndex(this.cat.x, this.cat.y)].classList.add('cat');
+        }
       }
     }, {
-      key: "showHamborgir",
+      key: 'showHamborgir',
       value: function showHamborgir() {
         this.board[this.getIndex(this.hamborgir.x, this.hamborgir.y)].classList.add('hamborgir');
       }
     }, {
-      key: "moveCat",
+      key: 'moveCat',
       value: function moveCat() {
-        if (this.cat.direction === "right") {
+        if (this.cat.direction === 'right') {
           this.cat.x = this.cat.x + 1;
-        } else if (this.cat.direction === "left") {
+        } else if (this.cat.direction === 'left') {
           this.cat.x = this.cat.x - 1;
-        } else if (this.cat.direction === "up") {
+        } else if (this.cat.direction === 'up') {
           this.cat.y = this.cat.y - 1;
-        } else if (this.cat.direction === "down") {
+        } else if (this.cat.direction === 'down') {
           this.cat.y = this.cat.y + 1;
         }
-        this.showCat();
-        this.checkHamborgirCollision();
         this.gameOver();
+        this.checkHamborgirCollision();
+        this.showCat();
       }
     }, {
-      key: "hideVisibleCat",
+      key: 'hideVisibleCat',
       value: function hideVisibleCat() {
         var visibleCat = document.querySelector('.cat');
         visibleCat.classList.remove('cat');
       }
     }, {
-      key: "turnCat",
+      key: 'turnCat',
       value: function turnCat(event) {
         switch (event.which) {
           case 37:
@@ -151,28 +157,31 @@ document.addEventListener("DOMContentLoaded", function () {
           case 40:
             this.cat.direction = 'down';
             break;
-        };
+        }
       }
     }, {
-      key: "checkHamborgirCollision",
+      key: 'checkHamborgirCollision',
       value: function checkHamborgirCollision() {
         if (this.cat.x === this.hamborgir.x && this.cat.y === this.hamborgir.y) {
-          console.log(this.board[this.getIndex(this.hamborgir.x, this.hamborgir.y)]);
           this.board[this.getIndex(this.hamborgir.x, this.hamborgir.y)].classList.remove('hamborgir');
           this.score += 1;
+
           this.hamborgir = new Hamborgir();
           this.showHamborgir();
         }
       }
     }, {
-      key: "gameOver",
+      key: 'gameOver',
       value: function gameOver() {
         if (this.cat.x < 0 || this.cat.x > 9 || this.cat.y < 0 || this.cat.y > 9) {
           clearInterval(this.startIntervalId);
+          this.cat.x = -1;
+          this.cat.y = -1;
+          console.log('game over');
         }
       }
     }, {
-      key: "startGame",
+      key: 'startGame',
       value: function startGame() {
         var that = this;
         this.startIntervalId = setInterval(function () {
@@ -186,7 +195,6 @@ document.addEventListener("DOMContentLoaded", function () {
   }();
 
   var newGame = new Game();
-
   newGame.showCat();
   newGame.showHamborgir();
   newGame.startGame();
