@@ -70,9 +70,51 @@
 "use strict";
 
 
-__webpack_require__(1);
-console.log("sadsadd");
-var PI = 3.14;
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+document.addEventListener("DOMContentLoaded", function () {
+  __webpack_require__(1);
+
+  var Cat = function Cat(x, y, direction) {
+    _classCallCheck(this, Cat);
+
+    this.x = 0, this.y = 0, this.direction = "right";
+  };
+
+  ;
+
+  var Hamborgir = function Hamborgir(x, y) {
+    _classCallCheck(this, Hamborgir);
+
+    this.x = Math.floor(Math.random() * 10), this.y = Math.floor(Math.random() * 10);
+  };
+
+  var newCat = new Hamborgir(5, 6);
+  console.log(newCat);
+
+  var Game = function () {
+    function Game() {
+      _classCallCheck(this, Game);
+
+      this.board = document.querySelectorAll('#board div'), this.cat = new Cat(), this.hamborgir = new Hamborgir(), this.score = 0;
+    }
+
+    _createClass(Game, [{
+      key: "getBoard",
+      value: function getBoard() {
+        console.log(this);
+      }
+    }]);
+
+    return Game;
+  }();
+
+  var newGame = new Game();
+
+  newGame.getBoard();
+});
 
 /***/ }),
 /* 1 */
@@ -89,7 +131,7 @@ var transform;
 var options = {}
 options.transform = transform
 // add the styles to the DOM
-var update = __webpack_require__(5)(content, options);
+var update = __webpack_require__(6)(content, options);
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -114,7 +156,7 @@ exports = module.exports = __webpack_require__(3)(undefined);
 
 
 // module
-exports.push([module.i, "* {\n  padding: 0;\n  margin: 0 auto; }\n\nbody {\n  background-color: black; }\n\n.score {\n  display: block;\n  height: 100px;\n  width: 300px;\n  background-color: gray; }\n\n.board {\n  height: 600px;\n  width: 600px; }\n  .board div {\n    float: left;\n    display: inline-block;\n    height: 60px;\n    width: 60px;\n    background-color: gray;\n    border: 1px solid black;\n    box-sizing: border-box; }\n    .board div.cat {\n      background-image: url(" + __webpack_require__(4) + ");\n      background-size: contain; }\n    .board div.coin {\n      background-image: url(" + __webpack_require__(7) + ");\n      background-size: contain; }\n", ""]);
+exports.push([module.i, "* {\n  padding: 0;\n  margin: 0 auto; }\n\nbody {\n  background-color: black; }\n\n.score {\n  display: block;\n  height: 100px;\n  width: 300px;\n  background-color: gray; }\n\n.board {\n  height: 600px;\n  width: 600px; }\n  .board div {\n    float: left;\n    display: inline-block;\n    height: 60px;\n    width: 60px;\n    background-color: gray;\n    border: 1px solid black;\n    box-sizing: border-box; }\n    .board div.cat {\n      background-image: url(" + __webpack_require__(4) + ");\n      background-size: contain; }\n    .board div.hamborgir {\n      background-image: url(" + __webpack_require__(5) + ");\n      background-size: contain; }\n", ""]);
 
 // exports
 
@@ -211,6 +253,12 @@ module.exports = __webpack_require__.p + "74aab79a5fede7d59ca2d69756668541.png";
 /* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
+module.exports = __webpack_require__.p + "b56103a8d00c69f1a051f0f36cc5d58e.png";
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
 /*
 	MIT License http://www.opensource.org/licenses/mit-license.php
 	Author Tobias Koppers @sokra
@@ -254,7 +302,7 @@ var singleton = null;
 var	singletonCounter = 0;
 var	stylesInsertedAtTop = [];
 
-var	fixUrls = __webpack_require__(6);
+var	fixUrls = __webpack_require__(7);
 
 module.exports = function(list, options) {
 	if (typeof DEBUG !== "undefined" && DEBUG) {
@@ -567,7 +615,7 @@ function updateLink (link, options, obj) {
 
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports) {
 
 
@@ -660,12 +708,6 @@ module.exports = function (css) {
 	return fixedCss;
 };
 
-
-/***/ }),
-/* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "b56103a8d00c69f1a051f0f36cc5d58e.png";
 
 /***/ })
 /******/ ]);

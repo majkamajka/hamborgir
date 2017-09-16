@@ -26,11 +26,11 @@ body {
     border: 1px solid black;
     box-sizing: border-box;
     &.cat {
-     background-image: url("../images/cat.png");
+     background-image: url('../images/cat.png');
      background-size: contain;
     }
-    &.coin {
-      background-image: url("../images/borgir-big.png");
+    &.hamborgir {
+      background-image: url('../images/borgir-big.png');
       background-size: contain;
     }
   }

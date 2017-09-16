@@ -1,45 +1,44 @@
 module.exports = {
   entry: './js/app.js',
-  output: { filename: "./js/out.js"},
+  output: {
+    filename: "./js/out.js"
+  },
   devServer: {
     inline: true,
-    contentBase: './'  ,
+    contentBase: './',
     port: 3001
   },
   watch: true,
   module: {
-        rules: [
-          {
-            test: /\.scss$/,
-            use: [{
-                loader: "style-loader" // creates style nodes from JS strings
-            }, {
-                loader: "css-loader" // translates CSS into CommonJS
-            }, {
-                loader: "sass-loader" // compiles Sass to CSS
-            }]
-        },
-        {
-      test: /\.js$/,
-      exclude: /(node_modules|bower_components)/,
-      use: {
-        loader: 'babel-loader',
-        options: {
-          presets: ['env']
-        }
-      }
-    },
-    {
-        test:/\.(png|jpe?g|gif)$/,
-        use: [
-          {
-            loader: 'file-loader',
-            options: {}
+    rules: [{
+        test: /\.scss$/,
+        use: [{
+          loader: "style-loader" // creates style nodes from JS strings
+        }, {
+          loader: "css-loader" // translates CSS into CommonJS
+        }, {
+          loader: "sass-loader" // compiles Sass to CSS
+        }]
+      },
+      {
+        test: /\.js$/,
+        exclude: /(node_modules|bower_components)/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['env']
           }
-        ]
+        }
+      },
+      {
+        test: /\.(png|jpe?g|gif)$/,
+        use: [{
+          loader: 'file-loader',
+          options: {
+            //name: './images/[name].[ext]'
+          }
+        }]
       }
-
-
-      ]
-    }
+    ]
+  }
 }
