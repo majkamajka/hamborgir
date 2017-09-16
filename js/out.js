@@ -110,6 +110,7 @@ document.addEventListener("DOMContentLoaded", function () {
       key: "showCat",
       value: function showCat() {
         this.board[this.getIndex(this.cat.x, this.cat.y)].classList.add('cat');
+        console.log("funkcja showCat");
       }
     }, {
       key: "showHamborgir",
@@ -117,10 +118,25 @@ document.addEventListener("DOMContentLoaded", function () {
         this.board[this.getIndex(this.hamborgir.x, this.hamborgir.y)].classList.add('hamborgir');
       }
     }, {
+      key: "moveCat",
+      value: function moveCat() {
+        if (this.cat.direction === "right") {
+          this.cat.x = this.cat.x + 1;
+        } else if (this.cat.direction === "left") {
+          this.cat.x = this.cat.x - 1;
+        } else if (this.cat.direction === "up") {
+          this.cat.y = this.cat.y - 1;
+        } else if (this.cat.direction === "down") {
+          this.cat.y = this.cat.y + 1;
+        }
+        this.showCat();
+      }
+    }, {
       key: "startGame",
       value: function startGame() {
+        var that = this;
         var startIntervalId = setInterval(function () {
-          console.log("aaa");
+          that.moveCat();
         }, 1000);
       }
     }]);

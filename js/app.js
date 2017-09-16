@@ -33,18 +33,35 @@ class Game {
 
   showCat() {
     this.board[this.getIndex(this.cat.x, this.cat.y)].classList.add('cat');
+    console.log("funkcja showCat");
   }
 
   showHamborgir() {
     this.board[this.getIndex(this.hamborgir.x, this.hamborgir.y)].classList.add('hamborgir');
   }
 
-  startGame() {
-    const startIntervalId = setInterval(function () {
-      console.log("aaa");
-    }, 1000);
-
+  moveCat() {
+    if (this.cat.direction === "right") {
+      this.cat.x = this.cat.x + 1;
+    } else if (this.cat.direction === "left") {
+      this.cat.x = this.cat.x -1;
+    } else if (this.cat.direction === "up") {
+      this.cat.y = this.cat.y -1;
+    } else if (this.cat.direction === "down") {
+      this.cat.y = this.cat.y +1;
+    }
+    this.showCat();
   }
+
+  startGame() {
+    const that = this;
+    const startIntervalId = setInterval(function () {
+      that.moveCat();
+    }, 1000);
+  }
+
+
+
 
 }
 
