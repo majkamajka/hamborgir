@@ -53,9 +53,17 @@ class Game {
     this.showCat();
   }
 
+  hideVisibleCat() {
+    let visibleCat = document.querySelector('.cat');
+    visibleCat.classList.remove('cat');
+  }
+
+
+
   startGame() {
     const that = this;
     const startIntervalId = setInterval(function () {
+      that.hideVisibleCat();
       that.moveCat();
     }, 1000);
   }
