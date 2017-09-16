@@ -26,13 +26,31 @@ class Game {
     this.hamborgir = new Hamborgir(),
     this.score = 0
   }
-  getBoard() {
-    console.log(this);
+
+  getIndex(x, y) {
+    return x + (y * 10);
   }
+
+  showCat() {
+    this.board[this.getIndex(this.cat.x, this.cat.y)].classList.add('cat');
+  }
+
+  showHamborgir() {
+    this.board[this.getIndex(this.hamborgir.x, this.hamborgir.y)].classList.add('hamborgir');
+  }
+
+  startGame() {
+    const startIntervalId = setInterval(function () {
+      console.log("aaa");
+    }, 1000);
+
+  }
+
 }
 
 let newGame = new Game();
 
-newGame.getBoard();
-
+newGame.showCat();
+newGame.showHamborgir();
+newGame.startGame();
 });

@@ -102,9 +102,26 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     _createClass(Game, [{
-      key: "getBoard",
-      value: function getBoard() {
-        console.log(this);
+      key: "getIndex",
+      value: function getIndex(x, y) {
+        return x + y * 10;
+      }
+    }, {
+      key: "showCat",
+      value: function showCat() {
+        this.board[this.getIndex(this.cat.x, this.cat.y)].classList.add('cat');
+      }
+    }, {
+      key: "showHamborgir",
+      value: function showHamborgir() {
+        this.board[this.getIndex(this.hamborgir.x, this.hamborgir.y)].classList.add('hamborgir');
+      }
+    }, {
+      key: "startGame",
+      value: function startGame() {
+        var startIntervalId = setInterval(function () {
+          console.log("aaa");
+        }, 1000);
       }
     }]);
 
@@ -113,7 +130,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
   var newGame = new Game();
 
-  newGame.getBoard();
+  newGame.showCat();
+  newGame.showHamborgir();
+  newGame.startGame();
 });
 
 /***/ }),
