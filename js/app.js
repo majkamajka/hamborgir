@@ -16,9 +16,6 @@ class Hamborgir {
   }
 }
 
-let newCat = new Hamborgir(5, 6);
-console.log(newCat);
-
 class Game {
   constructor() {
     this.board = document.querySelectorAll('#board div'),
@@ -33,7 +30,6 @@ class Game {
 
   showCat() {
     this.board[this.getIndex(this.cat.x, this.cat.y)].classList.add('cat');
-    console.log("funkcja showCat");
   }
 
   showHamborgir() {
@@ -51,6 +47,8 @@ class Game {
       this.cat.y = this.cat.y +1;
     }
     this.showCat();
+    this.checkHamborgirCollision();
+    this.gameOver();
   }
 
   hideVisibleCat() {
@@ -76,11 +74,27 @@ class Game {
     };
   }
 
+  checkHamborgirCollision() {
+    if (this.cat.x === this.hamborgir.x && this.cat.y === this.hamborgir.y) {
+      console.log(this.board[this.getIndex(this.hamborgir.x, this.hamborgir.y)]);
+      this.board[this.getIndex(this.hamborgir.x, this.hamborgir.y)].classList.remove('hamborgir');
+      this.score += 1;
+      this.hamborgir = new Hamborgir();
+      this.showHamborgir();
+    }
+  }
+
+  gameOver() {
+    if (this.cat.x < 0 || this.cat.x > 9 || this.cat.y < 0 || this.cat.y > 9) {
+      clearInterval(this.startIntervalId);
+    }
+  }
+
 
 
   startGame() {
     const that = this;
-    const startIntervalId = setInterval(function () {
+    this.startIntervalId = setInterval(function () {
       that.hideVisibleCat();
       that.moveCat();
     }, 1000);

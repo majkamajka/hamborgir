@@ -91,9 +91,6 @@ document.addEventListener("DOMContentLoaded", function () {
     this.x = Math.floor(Math.random() * 10), this.y = Math.floor(Math.random() * 10);
   };
 
-  var newCat = new Hamborgir(5, 6);
-  console.log(newCat);
-
   var Game = function () {
     function Game() {
       _classCallCheck(this, Game);
@@ -110,7 +107,6 @@ document.addEventListener("DOMContentLoaded", function () {
       key: "showCat",
       value: function showCat() {
         this.board[this.getIndex(this.cat.x, this.cat.y)].classList.add('cat');
-        console.log("funkcja showCat");
       }
     }, {
       key: "showHamborgir",
@@ -130,6 +126,8 @@ document.addEventListener("DOMContentLoaded", function () {
           this.cat.y = this.cat.y + 1;
         }
         this.showCat();
+        this.checkHamborgirCollision();
+        this.gameOver();
       }
     }, {
       key: "hideVisibleCat",
@@ -156,10 +154,28 @@ document.addEventListener("DOMContentLoaded", function () {
         };
       }
     }, {
+      key: "checkHamborgirCollision",
+      value: function checkHamborgirCollision() {
+        if (this.cat.x === this.hamborgir.x && this.cat.y === this.hamborgir.y) {
+          console.log(this.board[this.getIndex(this.hamborgir.x, this.hamborgir.y)]);
+          this.board[this.getIndex(this.hamborgir.x, this.hamborgir.y)].classList.remove('hamborgir');
+          this.score += 1;
+          this.hamborgir = new Hamborgir();
+          this.showHamborgir();
+        }
+      }
+    }, {
+      key: "gameOver",
+      value: function gameOver() {
+        if (this.cat.x < 0 || this.cat.x > 9 || this.cat.y < 0 || this.cat.y > 9) {
+          clearInterval(this.startIntervalId);
+        }
+      }
+    }, {
       key: "startGame",
       value: function startGame() {
         var that = this;
-        var startIntervalId = setInterval(function () {
+        this.startIntervalId = setInterval(function () {
           that.hideVisibleCat();
           that.moveCat();
         }, 1000);
