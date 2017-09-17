@@ -92,6 +92,13 @@ document.addEventListener('DOMContentLoaded', function () {
     this.y = Math.floor(Math.random() * 10);
   };
 
+  var Doge = function Doge() {
+    _classCallCheck(this, Doge);
+
+    this.x = Math.floor(Math.random() * 10);
+    this.y = Math.floor(Math.random() * 10);
+  };
+
   var Game = function () {
     function Game() {
       _classCallCheck(this, Game);
@@ -100,6 +107,8 @@ document.addEventListener('DOMContentLoaded', function () {
       this.cat = new Cat();
       this.hamborgir = new Hamborgir();
       this.score = 0;
+      this.interval = 1000;
+      this.dogeIndexes = [];
     }
 
     _createClass(Game, [{
@@ -117,7 +126,29 @@ document.addEventListener('DOMContentLoaded', function () {
     }, {
       key: 'showHamborgir',
       value: function showHamborgir() {
+        console.log(this.dogeIndexes);
         this.board[this.getIndex(this.hamborgir.x, this.hamborgir.y)].classList.add('hamborgir');
+      }
+    }, {
+      key: 'generateNewDoge',
+      value: function generateNewDoge(indexes) {
+        this.doge = new Doge();
+        var dogeIndex = this.getIndex(this.doge.x, this.doge.y);
+      }
+    }, {
+      key: 'showDoge',
+      value: function showDoge() {
+        this.doge = new Doge();
+        var dogeIndex = this.getIndex(this.doge.x, this.doge.y);
+        var catIndex = this.getIndex(this.cat.x, this.cat.y);
+        var hamborgirIndex = this.getIndex(this.hamborgir.x, this.hamborgir.y);
+        if (this.dogeIndexes.includes(dogeIndex) || dogeIndex === catIndex || dogeIndex === hamborgirIndex) {
+          this.showDoge();
+          console.log("duplicate");
+        } else {
+          this.dogeIndexes.push(dogeIndex);
+          this.board[dogeIndex].classList.add('doge');
+        }
       }
     }, {
       key: 'moveCat',
@@ -165,9 +196,10 @@ document.addEventListener('DOMContentLoaded', function () {
         if (this.cat.x === this.hamborgir.x && this.cat.y === this.hamborgir.y) {
           this.board[this.getIndex(this.hamborgir.x, this.hamborgir.y)].classList.remove('hamborgir');
           this.score += 1;
-
+          document.querySelector('#score').innerText = this.score;
           this.hamborgir = new Hamborgir();
           this.showHamborgir();
+          this.showDoge();
         }
       }
     }, {
@@ -187,7 +219,7 @@ document.addEventListener('DOMContentLoaded', function () {
         this.startIntervalId = setInterval(function () {
           that.hideVisibleCat();
           that.moveCat();
-        }, 1000);
+        }, 250);
       }
     }]);
 
@@ -218,7 +250,7 @@ var transform;
 var options = {}
 options.transform = transform
 // add the styles to the DOM
-var update = __webpack_require__(6)(content, options);
+var update = __webpack_require__(7)(content, options);
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -243,7 +275,7 @@ exports = module.exports = __webpack_require__(3)(undefined);
 
 
 // module
-exports.push([module.i, "* {\n  padding: 0;\n  margin: 0 auto; }\n\nbody {\n  background-color: black; }\n\n.score {\n  display: block;\n  height: 100px;\n  width: 300px;\n  background-color: gray; }\n\n.board {\n  height: 600px;\n  width: 600px; }\n  .board div {\n    float: left;\n    display: inline-block;\n    height: 60px;\n    width: 60px;\n    background-color: gray;\n    border: 1px solid black;\n    box-sizing: border-box; }\n    .board div.cat {\n      background-image: url(" + __webpack_require__(4) + ");\n      background-size: contain; }\n    .board div.hamborgir {\n      background-image: url(" + __webpack_require__(5) + ");\n      background-size: contain; }\n", ""]);
+exports.push([module.i, "* {\n  padding: 0;\n  margin: 0 auto; }\n\nbody {\n  background-color: black; }\n\n.score {\n  display: block;\n  height: 100px;\n  width: 300px;\n  background-color: gray; }\n\n.board {\n  height: 600px;\n  width: 600px; }\n  .board div {\n    float: left;\n    display: inline-block;\n    height: 60px;\n    width: 60px;\n    background-color: gray;\n    border: 1px solid black;\n    box-sizing: border-box; }\n    .board div.cat {\n      background-image: url(" + __webpack_require__(4) + ");\n      background-size: contain; }\n    .board div.hamborgir {\n      background-image: url(" + __webpack_require__(5) + ");\n      background-size: contain; }\n    .board div.doge {\n      background-image: url(" + __webpack_require__(6) + ");\n      background-size: contain; }\n", ""]);
 
 // exports
 
@@ -334,16 +366,22 @@ function toComment(sourceMap) {
 /* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "74aab79a5fede7d59ca2d69756668541.png";
+module.exports = __webpack_require__.p + "/images/cat.png";
 
 /***/ }),
 /* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "b56103a8d00c69f1a051f0f36cc5d58e.png";
+module.exports = __webpack_require__.p + "/images/borgir-big.png";
 
 /***/ }),
 /* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__.p + "/images/doge-head.png";
+
+/***/ }),
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -389,7 +427,7 @@ var singleton = null;
 var	singletonCounter = 0;
 var	stylesInsertedAtTop = [];
 
-var	fixUrls = __webpack_require__(7);
+var	fixUrls = __webpack_require__(8);
 
 module.exports = function(list, options) {
 	if (typeof DEBUG !== "undefined" && DEBUG) {
@@ -702,7 +740,7 @@ function updateLink (link, options, obj) {
 
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports) {
 
 

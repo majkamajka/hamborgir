@@ -33,5 +33,9 @@ body {
       background-image: url('../images/borgir-big.png');
       background-size: contain;
     }
+    &.doge {
+      background-image: url('../images/doge-head.png');
+      background-size: contain;
+    }
   }
 }
