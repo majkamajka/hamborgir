@@ -1,6 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
   require('../sass/style.scss');
 
+  let hamborgirIndex = 0;
+  let dogeIndex = 0;
+  let catIndex = 0;
+
   class Cat {
     constructor() {
       this.x = 0;
@@ -38,35 +42,30 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     showCat() {
-      if (this.board[this.getIndex(this.cat.x, this.cat.y)]) {
-        this.board[this.getIndex(this.cat.x, this.cat.y)].classList.add('cat');
+      catIndex = this.getIndex(this.cat.x, this.cat.y);
+      if (this.board[catIndex]) {
+        this.board[catIndex].classList.add('cat');
       }
     }
 
     showHamborgir() {
-      console.log(this.dogeIndexes);
-      let hamborgirIndex = this.getIndex(this.hamborgir.x, this.hamborgir.y);
+      hamborgirIndex = this.getIndex(this.hamborgir.x, this.hamborgir.y);
       if (this.dogeIndexes.includes(hamborgirIndex)) {
-        //this.showHamborgir();
-        console.log("borgir on dooge");
+        this.hamborgir = new Hamborgir();
+        this.showHamborgir();
       } else {
-        this.board[this.getIndex(this.hamborgir.x, this.hamborgir.y)].classList.add('hamborgir');
+        this.board[hamborgirIndex].classList.add('hamborgir');
       }
-    }
-
-    generateNewDoge(indexes) {
-      this.doge = new Doge();
-      let dogeIndex = this.getIndex(this.doge.x, this.doge.y);
     }
 
     showDoge() {
       this.doge = new Doge();
-      let dogeIndex = this.getIndex(this.doge.x, this.doge.y);
-      let catIndex = this.getIndex(this.cat.x, this.cat.y);
-      let hamborgirIndex = this.getIndex(this.hamborgir.x, this.hamborgir.y);
+      dogeIndex = this.getIndex(this.doge.x, this.doge.y);
+      catIndex = this.getIndex(this.cat.x, this.cat.y);
+      hamborgirIndex = this.getIndex(this.hamborgir.x, this.hamborgir.y);
+
       if (this.dogeIndexes.includes(dogeIndex) || dogeIndex === catIndex || dogeIndex === hamborgirIndex) {
         this.showDoge();
-        console.log("duplicate");
       } else {
         this.dogeIndexes.push(dogeIndex);
         this.board[dogeIndex].classList.add('doge');
@@ -111,8 +110,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     checkHamborgirCollision() {
-      if (this.cat.x === this.hamborgir.x && this.cat.y === this.hamborgir.y) {
-        this.board[this.getIndex(this.hamborgir.x, this.hamborgir.y)].classList.remove('hamborgir');
+      hamborgirIndex = this.getIndex(this.hamborgir.x, this.hamborgir.y);
+      catIndex = this.getIndex(this.cat.x, this.cat.y);
+      if (catIndex === hamborgirIndex) {
+        this.board[hamborgirIndex].classList.remove('hamborgir');
         this.score += 1;
         document.querySelector('#score').innerText = this.score;
         this.hamborgir = new Hamborgir();
@@ -147,4 +148,8 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('keydown', (event) => {
     newGame.turnCat(event);
   });
+
+
+
+
 });
