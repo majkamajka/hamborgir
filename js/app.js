@@ -144,14 +144,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  const newGame = new Game();
-  newGame.showCat();
-  newGame.showHamborgir();
-  newGame.startGame();
-  document.addEventListener('keydown', (event) => {
-    newGame.turnCat(event);
-  });
 
+
+  document.querySelector('#start').addEventListener('click', (e) => {
+    e.preventDefault();
+    document.querySelector('#start-game').classList.add('invisible');
+    const audio = new Audio('sounds/start.wav');
+    audio.play();
+    const newGame = new Game();
+    newGame.showCat();
+    newGame.showHamborgir();
+    newGame.startGame();
+    document.addEventListener('keydown', (event) => {
+      newGame.turnCat(event);
+    });
+  })
 
 
 

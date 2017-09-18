@@ -35,6 +35,12 @@ module.exports = {
         use: [{
           loader: 'file-loader?limit=1024&name=/images/[name].[ext]'
         }]
+      },
+      {
+        test: /\.(ttf)$/,
+        use: [{
+          loader: 'file-loader?limit=1024&name=/fonts/[name].[ext]'
+        }]
       }
     ]
   }

@@ -235,12 +235,18 @@ document.addEventListener('DOMContentLoaded', function () {
     return Game;
   }();
 
-  var newGame = new Game();
-  newGame.showCat();
-  newGame.showHamborgir();
-  newGame.startGame();
-  document.addEventListener('keydown', function (event) {
-    newGame.turnCat(event);
+  document.querySelector('#start').addEventListener('click', function (e) {
+    e.preventDefault();
+    document.querySelector('#start-game').classList.add('invisible');
+    var audio = new Audio('sounds/start.wav');
+    audio.play();
+    var newGame = new Game();
+    newGame.showCat();
+    newGame.showHamborgir();
+    newGame.startGame();
+    document.addEventListener('keydown', function (event) {
+      newGame.turnCat(event);
+    });
   });
 });
 
@@ -259,7 +265,7 @@ var transform;
 var options = {}
 options.transform = transform
 // add the styles to the DOM
-var update = __webpack_require__(7)(content, options);
+var update = __webpack_require__(8)(content, options);
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -284,7 +290,7 @@ exports = module.exports = __webpack_require__(3)(undefined);
 
 
 // module
-exports.push([module.i, "* {\n  padding: 0;\n  margin: 0 auto; }\n\nbody {\n  background-color: black; }\n\n.score {\n  display: block;\n  height: 100px;\n  width: 300px;\n  background-color: gray; }\n\n.board {\n  height: 600px;\n  width: 600px; }\n  .board div {\n    float: left;\n    display: inline-block;\n    height: 60px;\n    width: 60px;\n    background-color: gray;\n    border: 1px solid black;\n    box-sizing: border-box; }\n    .board div.cat {\n      background-image: url(" + __webpack_require__(4) + ");\n      background-size: contain; }\n    .board div.hamborgir {\n      background-image: url(" + __webpack_require__(5) + ");\n      background-size: contain; }\n    .board div.doge {\n      background-image: url(" + __webpack_require__(6) + ");\n      background-size: contain;\n      background-repeat: no-repeat; }\n", ""]);
+exports.push([module.i, "* {\n  box-sizing: border-box;\n  font-family: \"Emulogic\", \"Courier New\", sans-serif;\n  padding: 0;\n  margin: 0 auto; }\n\n@font-face {\n  font-family: Emulogic;\n  src: url(" + __webpack_require__(4) + "); }\n\nbody {\n  background-color: black; }\n\n#start-game {\n  height: 100%;\n  width: 100%;\n  background-color: black;\n  display: block;\n  position: absolute;\n  text-align: center;\n  display: flex;\n  justify-content: center; }\n  #start-game .start {\n    color: white;\n    margin: 40vh auto; }\n  #start-game #start-game .start :first-child {\n    font-size: 30px; }\n  #start-game #start-game .start :nth-child(2) {\n    font-size: 24px; }\n  #start-game button {\n    margin-top: 30px;\n    font-size: 24px; }\n\n#board {\n  width: 640px;\n  height: 640px;\n  margin: 1em auto; }\n\n#board > div {\n  border: 1px solid black;\n  float: left;\n  width: 64px;\n  height: 64px;\n  background-color: white; }\n\nsection#scoring div {\n  width: 10em;\n  height: 5em;\n  text-align: center;\n  padding: 0.5em;\n  /*background-color: rgba(211,211,211, 0.75);\n  border: 1px solid lightgray;\n  border-radius: 1px;\n  box-shadow: 1px 1px 5px 1px lightgray;*/\n  font-size: 20px;\n  margin: 0.5em auto;\n  color: white; }\n\n.board {\n  height: 600px;\n  width: 600px; }\n  .board div {\n    float: left;\n    display: inline-block;\n    height: 60px;\n    width: 60px;\n    background-color: gray;\n    border: 1px solid black;\n    box-sizing: border-box; }\n    .board div.cat {\n      background-image: url(" + __webpack_require__(5) + ");\n      background-size: contain; }\n    .board div.hamborgir {\n      background-image: url(" + __webpack_require__(6) + ");\n      background-size: contain; }\n    .board div.doge {\n      background-image: url(" + __webpack_require__(7) + ");\n      background-size: contain;\n      background-repeat: no-repeat; }\n\n#start-game.invisible {\n  display: none; }\n", ""]);
 
 // exports
 
@@ -375,22 +381,28 @@ function toComment(sourceMap) {
 /* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "/images/cat.png";
+module.exports = __webpack_require__.p + "/fonts/emulogic.ttf";
 
 /***/ }),
 /* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "/images/borgir-big.png";
+module.exports = __webpack_require__.p + "/images/cat.png";
 
 /***/ }),
 /* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "/images/doge-head.png";
+module.exports = __webpack_require__.p + "/images/borgir-big.png";
 
 /***/ }),
 /* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__.p + "/images/doge-head.png";
+
+/***/ }),
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -436,7 +448,7 @@ var singleton = null;
 var	singletonCounter = 0;
 var	stylesInsertedAtTop = [];
 
-var	fixUrls = __webpack_require__(8);
+var	fixUrls = __webpack_require__(9);
 
 module.exports = function(list, options) {
 	if (typeof DEBUG !== "undefined" && DEBUG) {
@@ -749,7 +761,7 @@ function updateLink (link, options, obj) {
 
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports) {
 
 
