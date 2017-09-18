@@ -112,19 +112,22 @@ document.addEventListener('DOMContentLoaded', () => {
     checkHamborgirCollision() {
       hamborgirIndex = this.getIndex(this.hamborgir.x, this.hamborgir.y);
       catIndex = this.getIndex(this.cat.x, this.cat.y);
+
       if (catIndex === hamborgirIndex) {
         this.board[hamborgirIndex].classList.remove('hamborgir');
         this.score += 1;
         document.querySelector('#score').innerText = this.score;
         this.hamborgir = new Hamborgir();
-        this.showDoge();
+        if (this.score % 3 === 0) {
+          this.showDoge();
+        }
         this.showHamborgir();
 
       }
     }
 
     gameOver() {
-      if (this.cat.x < 0 || this.cat.x > 9 || this.cat.y < 0 || this.cat.y > 9) {
+      if (this.cat.x < 0 || this.cat.x > 9 || this.cat.y < 0 || this.cat.y > 9 || this.dogeIndexes.includes(catIndex)) {
         clearInterval(this.startIntervalId);
         this.cat.x = -1;
         this.cat.y = -1;

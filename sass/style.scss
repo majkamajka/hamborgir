@@ -36,6 +36,7 @@ body {
     &.doge {
       background-image: url('../images/doge-head.png');
       background-size: contain;
+      background-repeat: no-repeat;
     }
   }
 }

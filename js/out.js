@@ -199,19 +199,22 @@ document.addEventListener('DOMContentLoaded', function () {
       value: function checkHamborgirCollision() {
         hamborgirIndex = this.getIndex(this.hamborgir.x, this.hamborgir.y);
         catIndex = this.getIndex(this.cat.x, this.cat.y);
+
         if (catIndex === hamborgirIndex) {
           this.board[hamborgirIndex].classList.remove('hamborgir');
           this.score += 1;
           document.querySelector('#score').innerText = this.score;
           this.hamborgir = new Hamborgir();
-          this.showDoge();
+          if (this.score % 3 === 0) {
+            this.showDoge();
+          }
           this.showHamborgir();
         }
       }
     }, {
       key: 'gameOver',
       value: function gameOver() {
-        if (this.cat.x < 0 || this.cat.x > 9 || this.cat.y < 0 || this.cat.y > 9) {
+        if (this.cat.x < 0 || this.cat.x > 9 || this.cat.y < 0 || this.cat.y > 9 || this.dogeIndexes.includes(catIndex)) {
           clearInterval(this.startIntervalId);
           this.cat.x = -1;
           this.cat.y = -1;
@@ -281,7 +284,7 @@ exports = module.exports = __webpack_require__(3)(undefined);
 
 
 // module
-exports.push([module.i, "* {\n  padding: 0;\n  margin: 0 auto; }\n\nbody {\n  background-color: black; }\n\n.score {\n  display: block;\n  height: 100px;\n  width: 300px;\n  background-color: gray; }\n\n.board {\n  height: 600px;\n  width: 600px; }\n  .board div {\n    float: left;\n    display: inline-block;\n    height: 60px;\n    width: 60px;\n    background-color: gray;\n    border: 1px solid black;\n    box-sizing: border-box; }\n    .board div.cat {\n      background-image: url(" + __webpack_require__(4) + ");\n      background-size: contain; }\n    .board div.hamborgir {\n      background-image: url(" + __webpack_require__(5) + ");\n      background-size: contain; }\n    .board div.doge {\n      background-image: url(" + __webpack_require__(6) + ");\n      background-size: contain; }\n", ""]);
+exports.push([module.i, "* {\n  padding: 0;\n  margin: 0 auto; }\n\nbody {\n  background-color: black; }\n\n.score {\n  display: block;\n  height: 100px;\n  width: 300px;\n  background-color: gray; }\n\n.board {\n  height: 600px;\n  width: 600px; }\n  .board div {\n    float: left;\n    display: inline-block;\n    height: 60px;\n    width: 60px;\n    background-color: gray;\n    border: 1px solid black;\n    box-sizing: border-box; }\n    .board div.cat {\n      background-image: url(" + __webpack_require__(4) + ");\n      background-size: contain; }\n    .board div.hamborgir {\n      background-image: url(" + __webpack_require__(5) + ");\n      background-size: contain; }\n    .board div.doge {\n      background-image: url(" + __webpack_require__(6) + ");\n      background-size: contain;\n      background-repeat: no-repeat; }\n", ""]);
 
 // exports
 
