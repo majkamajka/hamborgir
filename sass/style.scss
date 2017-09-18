@@ -14,33 +14,29 @@ body {
   background-color: black;
 }
 
-#start-game {
+.center-flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.start-game {
+  @extend .center-flex;
   height: 100%;
   width: 100%;
   background-color: black;
-  display: block;
   position: absolute;
   text-align: center;
-  display: flex;
-  justify-content: center;
   .start {
     color: white;
-    margin: 40vh auto;
+    font-size: 35px;
+    width: 700px;
+    .start-btn {
+      margin-top: 50px;
+      font-size: 30px;
+      padding: 10px;
+    }
   }
-
-  #start-game .start :first-child {
-    font-size: 30px;
-  }
-
-  #start-game .start :nth-child(2) {
-    font-size: 24px;
-  }
-
-  button {
-    margin-top: 30px;
-    font-size: 24px;
-  }
-
 }
 
 
@@ -112,6 +108,25 @@ section#scoring div {
 // }
 
 
-#start-game.invisible {
+
+
+.game-over {
+  @extend .center-flex;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  background-color: black;
+  .over {
+    text-align: center;
+    font-size: 24px;
+    color: white;
+  }
+}
+
+
+.invisible {
   display: none;
 }

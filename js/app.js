@@ -4,6 +4,9 @@ document.addEventListener('DOMContentLoaded', () => {
   let hamborgirIndex = 0;
   let dogeIndex = 0;
   let catIndex = 0;
+  const startAudio = new Audio('sounds/start.wav');
+  const dogeAudio = new Audio('sounds/bark.wav');
+  const hamborgirAudio = new Audio('sounds/coin.wav');
 
   class Cat {
     constructor() {
@@ -129,9 +132,15 @@ document.addEventListener('DOMContentLoaded', () => {
     gameOver() {
       if (this.cat.x < 0 || this.cat.x > 9 || this.cat.y < 0 || this.cat.y > 9 || this.dogeIndexes.includes(catIndex)) {
         clearInterval(this.startIntervalId);
+        if (this.dogeIndexes.includes(catIndex)) {
+          dogeAudio.play();
+          setTimeout(function () {
+            dogeAudio.play();
+          }, 600);
+        }
         this.cat.x = -1;
         this.cat.y = -1;
-        console.log('game over');
+        document.querySelector('#over').classList.remove('invisible');
       }
     }
 
@@ -149,8 +158,8 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelector('#start').addEventListener('click', (e) => {
     e.preventDefault();
     document.querySelector('#start-game').classList.add('invisible');
-    const audio = new Audio('sounds/start.wav');
-    audio.play();
+
+    startAudio.play();
     const newGame = new Game();
     newGame.showCat();
     newGame.showHamborgir();
