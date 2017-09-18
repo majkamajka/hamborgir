@@ -127,7 +127,13 @@ document.addEventListener('DOMContentLoaded', function () {
       key: 'showHamborgir',
       value: function showHamborgir() {
         console.log(this.dogeIndexes);
-        this.board[this.getIndex(this.hamborgir.x, this.hamborgir.y)].classList.add('hamborgir');
+        var hamborgirIndex = this.getIndex(this.hamborgir.x, this.hamborgir.y);
+        if (this.dogeIndexes.includes(hamborgirIndex)) {
+          //this.showHamborgir();
+          console.log("borgir on dooge");
+        } else {
+          this.board[this.getIndex(this.hamborgir.x, this.hamborgir.y)].classList.add('hamborgir');
+        }
       }
     }, {
       key: 'generateNewDoge',
@@ -198,8 +204,8 @@ document.addEventListener('DOMContentLoaded', function () {
           this.score += 1;
           document.querySelector('#score').innerText = this.score;
           this.hamborgir = new Hamborgir();
-          this.showHamborgir();
           this.showDoge();
+          this.showHamborgir();
         }
       }
     }, {

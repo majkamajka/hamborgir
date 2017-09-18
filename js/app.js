@@ -45,7 +45,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     showHamborgir() {
       console.log(this.dogeIndexes);
-      this.board[this.getIndex(this.hamborgir.x, this.hamborgir.y)].classList.add('hamborgir');
+      let hamborgirIndex = this.getIndex(this.hamborgir.x, this.hamborgir.y);
+      if (this.dogeIndexes.includes(hamborgirIndex)) {
+        //this.showHamborgir();
+        console.log("borgir on dooge");
+      } else {
+        this.board[this.getIndex(this.hamborgir.x, this.hamborgir.y)].classList.add('hamborgir');
+      }
     }
 
     generateNewDoge(indexes) {
@@ -110,8 +116,9 @@ document.addEventListener('DOMContentLoaded', () => {
         this.score += 1;
         document.querySelector('#score').innerText = this.score;
         this.hamborgir = new Hamborgir();
-        this.showHamborgir();
         this.showDoge();
+        this.showHamborgir();
+
       }
     }
 
