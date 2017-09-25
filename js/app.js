@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const startAudio = new Audio('sounds/start.wav');
   const dogeAudio = new Audio('sounds/bark.wav');
   const hamborgirAudio = new Audio('sounds/coin.wav');
+  let doges  = [];
 
   class Cat {
     constructor() {
@@ -38,6 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
       this.score = 0;
       this.interval = 1000;
       this.dogeIndexes = [];
+      console.log(this);
     }
 
     getIndex(x, y) {
@@ -117,6 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
       catIndex = this.getIndex(this.cat.x, this.cat.y);
 
       if (catIndex === hamborgirIndex) {
+        hamborgirAudio.play();
         this.board[hamborgirIndex].classList.remove('hamborgir');
         this.score += 1;
         document.querySelector('#score').innerText = this.score;
@@ -141,6 +144,12 @@ document.addEventListener('DOMContentLoaded', () => {
         this.cat.x = -1;
         this.cat.y = -1;
         document.querySelector('#over').classList.remove('invisible');
+        document.querySelector('#over .over span').innerText = this.score;
+        document.querySelector('.hamborgir').classList.remove('hamborgir');
+        doges = document.querySelectorAll('.doge');
+        console.log(doges);
+        doges.forEach((e) => e.classList.remove('doge'));
+
       }
     }
 
@@ -153,12 +162,34 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-
+  function start() {
+    startAudio.play();
+    const newGame = new Game();
+    newGame.showCat();
+    newGame.showHamborgir();
+    newGame.startGame();
+    document.addEventListener('keydown', (event) => {
+      newGame.turnCat(event);
+    });
+  }
 
   document.querySelector('#start').addEventListener('click', (e) => {
     e.preventDefault();
     document.querySelector('#start-game').classList.add('invisible');
+    startAudio.play();
+    const newGame = new Game();
+    newGame.showCat();
+    newGame.showHamborgir();
+    newGame.startGame();
+    document.addEventListener('keydown', (event) => {
+      newGame.turnCat(event);
+    });
+  })
 
+  document.querySelector('#replay').addEventListener('click', (e) => {
+    e.preventDefault();
+    document.querySelector('#over').classList.add('invisible');
+    document.querySelector('#score').innerText = 0;
     startAudio.play();
     const newGame = new Game();
     newGame.showCat();

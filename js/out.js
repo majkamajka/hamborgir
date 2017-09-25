@@ -83,6 +83,7 @@ document.addEventListener('DOMContentLoaded', function () {
   var startAudio = new Audio('sounds/start.wav');
   var dogeAudio = new Audio('sounds/bark.wav');
   var hamborgirAudio = new Audio('sounds/coin.wav');
+  var doges = [];
 
   var Cat = function Cat() {
     _classCallCheck(this, Cat);
@@ -116,6 +117,7 @@ document.addEventListener('DOMContentLoaded', function () {
       this.score = 0;
       this.interval = 1000;
       this.dogeIndexes = [];
+      console.log(this);
     }
 
     _createClass(Game, [{
@@ -204,6 +206,7 @@ document.addEventListener('DOMContentLoaded', function () {
         catIndex = this.getIndex(this.cat.x, this.cat.y);
 
         if (catIndex === hamborgirIndex) {
+          hamborgirAudio.play();
           this.board[hamborgirIndex].classList.remove('hamborgir');
           this.score += 1;
           document.querySelector('#score').innerText = this.score;
@@ -228,6 +231,13 @@ document.addEventListener('DOMContentLoaded', function () {
           this.cat.x = -1;
           this.cat.y = -1;
           document.querySelector('#over').classList.remove('invisible');
+          document.querySelector('#over .over span').innerText = this.score;
+          document.querySelector('.hamborgir').classList.remove('hamborgir');
+          doges = document.querySelectorAll('.doge');
+          console.log(doges);
+          doges.forEach(function (e) {
+            return e.classList.remove('doge');
+          });
         }
       }
     }, {
@@ -244,10 +254,34 @@ document.addEventListener('DOMContentLoaded', function () {
     return Game;
   }();
 
+  function start() {
+    startAudio.play();
+    var newGame = new Game();
+    newGame.showCat();
+    newGame.showHamborgir();
+    newGame.startGame();
+    document.addEventListener('keydown', function (event) {
+      newGame.turnCat(event);
+    });
+  }
+
   document.querySelector('#start').addEventListener('click', function (e) {
     e.preventDefault();
     document.querySelector('#start-game').classList.add('invisible');
+    startAudio.play();
+    var newGame = new Game();
+    newGame.showCat();
+    newGame.showHamborgir();
+    newGame.startGame();
+    document.addEventListener('keydown', function (event) {
+      newGame.turnCat(event);
+    });
+  });
 
+  document.querySelector('#replay').addEventListener('click', function (e) {
+    e.preventDefault();
+    document.querySelector('#over').classList.add('invisible');
+    document.querySelector('#score').innerText = 0;
     startAudio.play();
     var newGame = new Game();
     newGame.showCat();
@@ -299,7 +333,7 @@ exports = module.exports = __webpack_require__(3)(undefined);
 
 
 // module
-exports.push([module.i, "* {\n  box-sizing: border-box;\n  font-family: \"Emulogic\", \"Courier New\", sans-serif;\n  padding: 0;\n  margin: 0 auto; }\n\n@font-face {\n  font-family: Emulogic;\n  src: url(" + __webpack_require__(4) + "); }\n\nbody {\n  background-color: black; }\n\n.center-flex, .start-game, .game-over {\n  display: flex;\n  justify-content: center;\n  align-items: center; }\n\n.start-game {\n  height: 100%;\n  width: 100%;\n  background-color: black;\n  position: absolute;\n  text-align: center; }\n  .start-game .start {\n    color: white;\n    font-size: 35px;\n    width: 700px; }\n    .start-game .start .start-btn {\n      margin-top: 50px;\n      font-size: 30px;\n      padding: 10px; }\n\n#board {\n  width: 640px;\n  height: 640px;\n  margin: 1em auto; }\n\n#board > div {\n  border: 1px solid black;\n  float: left;\n  width: 64px;\n  height: 64px;\n  background-color: white; }\n\nsection#scoring div {\n  width: 10em;\n  height: 5em;\n  text-align: center;\n  padding: 0.5em;\n  /*background-color: rgba(211,211,211, 0.75);\n  border: 1px solid lightgray;\n  border-radius: 1px;\n  box-shadow: 1px 1px 5px 1px lightgray;*/\n  font-size: 20px;\n  margin: 0.5em auto;\n  color: white; }\n\n.board {\n  height: 600px;\n  width: 600px; }\n  .board div {\n    float: left;\n    display: inline-block;\n    height: 60px;\n    width: 60px;\n    background-color: gray;\n    border: 1px solid black;\n    box-sizing: border-box; }\n    .board div.cat {\n      background-image: url(" + __webpack_require__(5) + ");\n      background-size: contain; }\n    .board div.hamborgir {\n      background-image: url(" + __webpack_require__(6) + ");\n      background-size: contain; }\n    .board div.doge {\n      background-image: url(" + __webpack_require__(7) + ");\n      background-size: contain;\n      background-repeat: no-repeat; }\n\n.game-over {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  z-index: 1;\n  background-color: black; }\n  .game-over .over {\n    text-align: center;\n    font-size: 24px;\n    color: white; }\n\n.invisible {\n  display: none; }\n", ""]);
+exports.push([module.i, "* {\n  box-sizing: border-box;\n  font-family: \"Emulogic\", \"Courier New\", sans-serif;\n  padding: 0;\n  margin: 0 auto; }\n\n@font-face {\n  font-family: Emulogic;\n  src: url(" + __webpack_require__(4) + "); }\n\nbody {\n  background-color: black; }\n\n.center-flex, .start-game, .game-over {\n  display: flex;\n  justify-content: center;\n  align-items: center; }\n\n.btn {\n  margin-top: 50px;\n  font-size: 30px;\n  padding: 10px; }\n\n.start-game {\n  height: 100%;\n  width: 100%;\n  background-color: black;\n  position: absolute;\n  text-align: center; }\n  .start-game .start {\n    color: white;\n    font-size: 35px;\n    width: 700px; }\n\n#board {\n  width: 640px;\n  height: 640px;\n  margin: 1em auto; }\n\n#board > div {\n  border: 1px solid black;\n  float: left;\n  width: 64px;\n  height: 64px;\n  background-color: white; }\n\nsection#scoring div {\n  width: 10em;\n  height: 5em;\n  text-align: center;\n  padding: 0.5em;\n  /*background-color: rgba(211,211,211, 0.75);\n  border: 1px solid lightgray;\n  border-radius: 1px;\n  box-shadow: 1px 1px 5px 1px lightgray;*/\n  font-size: 20px;\n  margin: 0.5em auto;\n  color: white; }\n\n.board {\n  height: 600px;\n  width: 600px; }\n  .board div {\n    float: left;\n    display: inline-block;\n    height: 60px;\n    width: 60px;\n    background-color: gray;\n    border: 1px solid black;\n    box-sizing: border-box; }\n    .board div.cat {\n      background-image: url(" + __webpack_require__(5) + ");\n      background-size: contain; }\n    .board div.hamborgir {\n      background-image: url(" + __webpack_require__(6) + ");\n      background-size: contain; }\n    .board div.doge {\n      background-image: url(" + __webpack_require__(7) + ");\n      background-size: contain;\n      background-repeat: no-repeat; }\n\n.game-over {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  z-index: 1;\n  background-color: black; }\n  .game-over .over {\n    text-align: center;\n    font-size: 24px;\n    color: white; }\n\n.invisible {\n  display: none; }\n", ""]);
 
 // exports
 

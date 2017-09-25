@@ -20,6 +20,12 @@ body {
   align-items: center;
 }
 
+.btn {
+  margin-top: 50px;
+  font-size: 30px;
+  padding: 10px;
+}
+
 .start-game {
   @extend .center-flex;
   height: 100%;
@@ -31,11 +37,6 @@ body {
     color: white;
     font-size: 35px;
     width: 700px;
-    .start-btn {
-      margin-top: 50px;
-      font-size: 30px;
-      padding: 10px;
-    }
   }
 }
 
