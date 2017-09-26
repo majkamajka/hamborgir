@@ -84,6 +84,7 @@ document.addEventListener('DOMContentLoaded', function () {
   var dogeAudio = new Audio('sounds/bark.wav');
   var hamborgirAudio = new Audio('sounds/coin.wav');
   var doges = [];
+  var counter = 250;
 
   var Cat = function Cat() {
     _classCallCheck(this, Cat);
@@ -215,6 +216,10 @@ document.addEventListener('DOMContentLoaded', function () {
             this.showDoge();
           }
           this.showHamborgir();
+
+          if (this.score > 0 && this.score % 3 === 0) {
+            counter -= 10;
+          }
         }
       }
     }, {
@@ -244,10 +249,20 @@ document.addEventListener('DOMContentLoaded', function () {
       key: 'startGame',
       value: function startGame() {
         var that = this;
-        this.startIntervalId = setInterval(function () {
+
+        var myFunction = function myFunction() {
           that.hideVisibleCat();
           that.moveCat();
-        }, 250);
+          setTimeout(myFunction, counter);
+          console.log("aaa");
+        };
+        setTimeout(myFunction, counter);
+
+        // this.startIntervalId = setInterval(() => {
+        //   that.hideVisibleCat();
+        //   that.moveCat();
+        // }, 250);
+
       }
     }]);
 

@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const dogeAudio = new Audio('sounds/bark.wav');
   const hamborgirAudio = new Audio('sounds/coin.wav');
   let doges  = [];
+  let counter = 250;
 
   class Cat {
     constructor() {
@@ -129,6 +130,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         this.showHamborgir();
 
+        if (this.score > 0 && this.score % 3 === 0) {
+          counter -= 10;
+        }
       }
     }
 
@@ -155,10 +159,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     startGame() {
       const that = this;
-      this.startIntervalId = setInterval(() => {
+
+      var myFunction = function() {
         that.hideVisibleCat();
         that.moveCat();
-      }, 250);
+          setTimeout(myFunction, counter);
+          console.log("aaa");
+      }
+      setTimeout(myFunction, counter);
+
+
+      // this.startIntervalId = setInterval(() => {
+      //   that.hideVisibleCat();
+      //   that.moveCat();
+      // }, 250);
+
+
+
     }
   }
 
