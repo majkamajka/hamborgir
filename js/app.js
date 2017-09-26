@@ -8,7 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const dogeAudio = new Audio('sounds/bark.wav');
   const hamborgirAudio = new Audio('sounds/coin.wav');
   let doges  = [];
-  let counter = 250;
+  let gameSpeed = 250;
+  let gameOn = true;
 
   class Cat {
     constructor() {
@@ -131,13 +132,14 @@ document.addEventListener('DOMContentLoaded', () => {
         this.showHamborgir();
 
         if (this.score > 0 && this.score % 3 === 0) {
-          counter -= 10;
+          gameSpeed -= 10;
         }
       }
     }
 
     gameOver() {
       if (this.cat.x < 0 || this.cat.x > 9 || this.cat.y < 0 || this.cat.y > 9 || this.dogeIndexes.includes(catIndex)) {
+
         clearInterval(this.startIntervalId);
         if (this.dogeIndexes.includes(catIndex)) {
           dogeAudio.play();
@@ -151,22 +153,23 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector('#over .over span').innerText = this.score;
         document.querySelector('.hamborgir').classList.remove('hamborgir');
         doges = document.querySelectorAll('.doge');
-        console.log(doges);
         doges.forEach((e) => e.classList.remove('doge'));
-
+        gameOn = false;
       }
     }
 
     startGame() {
       const that = this;
 
-      var myFunction = function() {
+      const catTimeout = function() {
         that.hideVisibleCat();
         that.moveCat();
-          setTimeout(myFunction, counter);
-          console.log("aaa");
+        console.log(gameSpeed);
+        if (gameOn === true) {
+          setTimeout(catTimeout, gameSpeed);
+        }
       }
-      setTimeout(myFunction, counter);
+      setTimeout(catTimeout, gameSpeed);
 
 
       // this.startIntervalId = setInterval(() => {
@@ -205,6 +208,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.querySelector('#replay').addEventListener('click', (e) => {
     e.preventDefault();
+    gameOn = true;
+    gameSpeed = 250;
     document.querySelector('#over').classList.add('invisible');
     document.querySelector('#score').innerText = 0;
     startAudio.play();

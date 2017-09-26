@@ -84,7 +84,8 @@ document.addEventListener('DOMContentLoaded', function () {
   var dogeAudio = new Audio('sounds/bark.wav');
   var hamborgirAudio = new Audio('sounds/coin.wav');
   var doges = [];
-  var counter = 250;
+  var gameSpeed = 250;
+  var gameOn = true;
 
   var Cat = function Cat() {
     _classCallCheck(this, Cat);
@@ -218,7 +219,7 @@ document.addEventListener('DOMContentLoaded', function () {
           this.showHamborgir();
 
           if (this.score > 0 && this.score % 3 === 0) {
-            counter -= 10;
+            gameSpeed -= 10;
           }
         }
       }
@@ -226,6 +227,7 @@ document.addEventListener('DOMContentLoaded', function () {
       key: 'gameOver',
       value: function gameOver() {
         if (this.cat.x < 0 || this.cat.x > 9 || this.cat.y < 0 || this.cat.y > 9 || this.dogeIndexes.includes(catIndex)) {
+
           clearInterval(this.startIntervalId);
           if (this.dogeIndexes.includes(catIndex)) {
             dogeAudio.play();
@@ -239,10 +241,10 @@ document.addEventListener('DOMContentLoaded', function () {
           document.querySelector('#over .over span').innerText = this.score;
           document.querySelector('.hamborgir').classList.remove('hamborgir');
           doges = document.querySelectorAll('.doge');
-          console.log(doges);
           doges.forEach(function (e) {
             return e.classList.remove('doge');
           });
+          gameOn = false;
         }
       }
     }, {
@@ -250,13 +252,15 @@ document.addEventListener('DOMContentLoaded', function () {
       value: function startGame() {
         var that = this;
 
-        var myFunction = function myFunction() {
+        var catTimeout = function catTimeout() {
           that.hideVisibleCat();
           that.moveCat();
-          setTimeout(myFunction, counter);
-          console.log("aaa");
+          console.log(gameSpeed);
+          if (gameOn === true) {
+            setTimeout(catTimeout, gameSpeed);
+          }
         };
-        setTimeout(myFunction, counter);
+        setTimeout(catTimeout, gameSpeed);
 
         // this.startIntervalId = setInterval(() => {
         //   that.hideVisibleCat();
@@ -295,6 +299,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
   document.querySelector('#replay').addEventListener('click', function (e) {
     e.preventDefault();
+    gameOn = true;
+    gameSpeed = 250;
     document.querySelector('#over').classList.add('invisible');
     document.querySelector('#score').innerText = 0;
     startAudio.play();
