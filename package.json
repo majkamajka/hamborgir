@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "name": "furrygame",
   "version": "1.0.0",
   "description": "## Przygotowanie",
@@ -9,14 +10,52 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/majkamajka/hamborgir.git"
+=======
+  "name": "hamborgir-level-up",
+  "version": "1.0.0",
+  "description": "upgrade of hamborgir game, as a revision of js objects",
+  "main": "index.js",
+  "scripts": {
+    "webpack": "node_modules/.bin/webpack",
+    "server": "node_modules/.bin/webpack-dev-server --hot",
+    "all": "node_modules/.bin/webpack && node_modules/.bin/webpack-dev-server --hot"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/majkamajka/hamborgir-level-up.git"
+>>>>>>> 102c1d19698db1ca5a2175563b77e4aa3773dcbb
   },
   "author": "",
   "license": "ISC",
   "bugs": {
+<<<<<<< HEAD
     "url": "https://github.com/majkamajka/hamborgir/issues"
   },
   "homepage": "https://github.com/majkamajka/hamborgir#readme",
   "devDependencies": {
     "webpack": "^3.0.0-rc.1"
+=======
+    "url": "https://github.com/majkamajka/hamborgir-level-up/issues"
+  },
+  "homepage": "https://github.com/majkamajka/hamborgir-level-up#readme",
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-eslint": "^8.0.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-env": "^1.6.0",
+    "css-loader": "^0.28.7",
+    "eslint": "^4.7.0",
+    "eslint-config-airbnb": "^15.1.0",
+    "eslint-config-airbnb-base": "^12.0.0",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-jsx-a11y": "^5.1.1",
+    "eslint-plugin-react": "^7.3.0",
+    "file-loader": "^0.11.2",
+    "node-sass": "^4.5.3",
+    "sass-loader": "^6.0.6",
+    "style-loader": "^0.18.2",
+    "webpack": "^3.6.0",
+    "webpack-dev-server": "^2.8.2"
+>>>>>>> 102c1d19698db1ca5a2175563b77e4aa3773dcbb
   }
 }
