@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const startAudio = new Audio('sounds/start.wav');
   const dogeAudio = new Audio('sounds/bark.wav');
   const hamborgirAudio = new Audio('sounds/coin.wav');
+  const gameoverAudio = new Audio('sounds/gameover.wav');
   const selectAudio = new Audio('sounds/select.wav');
   let doges  = [];
   let gameSpeed = 250;
@@ -151,6 +152,8 @@ document.addEventListener('DOMContentLoaded', () => {
           setTimeout(function () {
             dogeAudio.play();
           }, 600);
+        } else {
+          gameoverAudio.play();
         }
         this.cat.x = -1;
         this.cat.y = -1;
@@ -200,22 +203,21 @@ document.addEventListener('DOMContentLoaded', () => {
       selectAudio.play();
       runMode.classList.toggle('selected');
       dogeMode.classList.toggle('selected');
+    } else if (e.which === 13) {
+      selectMenu = false;
+      document.querySelector('#start-game').classList.add('invisible');
+      startAudio.play();
+      const newGame = new Game();
+      newGame.showCat();
+      newGame.showHamborgir();
+      newGame.startGame();
+      document.addEventListener('keydown', (event) => {
+        newGame.turnCat(event);
+      });
     }
   });
 
-  document.querySelector('#start').addEventListener('click', (e) => {
-    e.preventDefault();
-    selectMenu = false;
-    document.querySelector('#start-game').classList.add('invisible');
-    startAudio.play();
-    const newGame = new Game();
-    newGame.showCat();
-    newGame.showHamborgir();
-    newGame.startGame();
-    document.addEventListener('keydown', (event) => {
-      newGame.turnCat(event);
-    });
-  })
+
 
   document.querySelector('#replay').addEventListener('click', (e) => {
     e.preventDefault();
@@ -234,3 +236,18 @@ document.addEventListener('DOMContentLoaded', () => {
   })
 
 });
+
+
+// document.querySelector('#start').addEventListener('click', (e) => {
+//   e.preventDefault();
+//   selectMenu = false;
+//   document.querySelector('#start-game').classList.add('invisible');
+//   startAudio.play();
+//   const newGame = new Game();
+//   newGame.showCat();
+//   newGame.showHamborgir();
+//   newGame.startGame();
+//   document.addEventListener('keydown', (event) => {
+//     newGame.turnCat(event);
+//   });
+// })

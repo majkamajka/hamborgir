@@ -39,11 +39,33 @@ body {
     color: white;
     font-size: 35px;
     width: 700px;
+    h1 {
+      font-size: 50px;
+    }
+    h2 {
+      font-size: 30px;
+      margin-top: 50px;
+    }
+    p {
+      margin-top: 30px;
+      font-size: 12px;
+      line-height: 26px;
+      span {
+        display: inline-block;
+        font-size: 20px;
+        &.rotate {
+          margin-left: 10px;
+          transform: rotate(180deg);
+        }
+      }
+    }
+
     .game-mode {
-      margin-top: 20px;
+      margin-top: 10px;
       text-align: left;
       display: inline-block;
       list-style: none;
+      font-size: 26px;
       li {
         padding: 10px;
         &.selected {

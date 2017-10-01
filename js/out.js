@@ -83,6 +83,7 @@ document.addEventListener('DOMContentLoaded', function () {
   var startAudio = new Audio('sounds/start.wav');
   var dogeAudio = new Audio('sounds/bark.wav');
   var hamborgirAudio = new Audio('sounds/coin.wav');
+  var gameoverAudio = new Audio('sounds/gameover.wav');
   var selectAudio = new Audio('sounds/select.wav');
   var doges = [];
   var gameSpeed = 250;
@@ -238,6 +239,8 @@ document.addEventListener('DOMContentLoaded', function () {
             setTimeout(function () {
               dogeAudio.play();
             }, 600);
+          } else {
+            gameoverAudio.play();
           }
           this.cat.x = -1;
           this.cat.y = -1;
@@ -291,21 +294,18 @@ document.addEventListener('DOMContentLoaded', function () {
       selectAudio.play();
       runMode.classList.toggle('selected');
       dogeMode.classList.toggle('selected');
+    } else if (e.which === 13) {
+      selectMenu = false;
+      document.querySelector('#start-game').classList.add('invisible');
+      startAudio.play();
+      var newGame = new Game();
+      newGame.showCat();
+      newGame.showHamborgir();
+      newGame.startGame();
+      document.addEventListener('keydown', function (event) {
+        newGame.turnCat(event);
+      });
     }
-  });
-
-  document.querySelector('#start').addEventListener('click', function (e) {
-    e.preventDefault();
-    selectMenu = false;
-    document.querySelector('#start-game').classList.add('invisible');
-    startAudio.play();
-    var newGame = new Game();
-    newGame.showCat();
-    newGame.showHamborgir();
-    newGame.startGame();
-    document.addEventListener('keydown', function (event) {
-      newGame.turnCat(event);
-    });
   });
 
   document.querySelector('#replay').addEventListener('click', function (e) {
@@ -324,6 +324,20 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 });
+
+// document.querySelector('#start').addEventListener('click', (e) => {
+//   e.preventDefault();
+//   selectMenu = false;
+//   document.querySelector('#start-game').classList.add('invisible');
+//   startAudio.play();
+//   const newGame = new Game();
+//   newGame.showCat();
+//   newGame.showHamborgir();
+//   newGame.startGame();
+//   document.addEventListener('keydown', (event) => {
+//     newGame.turnCat(event);
+//   });
+// })
 
 /***/ }),
 /* 1 */
@@ -365,7 +379,7 @@ exports = module.exports = __webpack_require__(3)(undefined);
 
 
 // module
-exports.push([module.i, "* {\n  box-sizing: border-box;\n  font-family: \"Emulogic\", \"Courier New\", sans-serif;\n  padding: 0;\n  margin: 0 auto; }\n\n@font-face {\n  font-family: Emulogic;\n  src: url(" + __webpack_require__(4) + "); }\n\nbody {\n  background-color: black; }\n\n.center-flex, .start-game, .game-over {\n  display: flex;\n  justify-content: center;\n  align-items: center; }\n\n.btn {\n  margin-top: 50px;\n  font-size: 30px;\n  padding: 10px;\n  display: block; }\n\n.start-game {\n  height: 100%;\n  width: 100%;\n  background-color: black;\n  position: absolute;\n  top: 0;\n  text-align: center; }\n  .start-game .start {\n    color: white;\n    font-size: 35px;\n    width: 700px; }\n    .start-game .start .game-mode {\n      margin-top: 20px;\n      text-align: left;\n      display: inline-block;\n      list-style: none; }\n      .start-game .start .game-mode li {\n        padding: 10px; }\n        .start-game .start .game-mode li.selected {\n          text-shadow: 0 0 20px white;\n          list-style-type: square; }\n\n#board {\n  width: 640px;\n  height: 640px;\n  margin: 1em auto; }\n\n#board > div {\n  border: 1px solid black;\n  float: left;\n  width: 64px;\n  height: 64px;\n  background-color: white; }\n\nsection#scoring div {\n  width: 10em;\n  height: 5em;\n  text-align: center;\n  padding: 0.5em;\n  /*background-color: rgba(211,211,211, 0.75);\n  border: 1px solid lightgray;\n  border-radius: 1px;\n  box-shadow: 1px 1px 5px 1px lightgray;*/\n  font-size: 20px;\n  margin: 0.5em auto;\n  color: white; }\n\n.board {\n  height: 600px;\n  width: 600px; }\n  .board div {\n    float: left;\n    display: inline-block;\n    height: 60px;\n    width: 60px;\n    background-color: gray;\n    border: 1px solid black;\n    box-sizing: border-box; }\n    .board div.cat {\n      background-image: url(" + __webpack_require__(5) + ");\n      background-size: contain; }\n    .board div.hamborgir {\n      background-image: url(" + __webpack_require__(6) + ");\n      background-size: contain; }\n    .board div.doge {\n      background-image: url(" + __webpack_require__(7) + ");\n      background-size: contain;\n      background-repeat: no-repeat; }\n\n.game-over {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  z-index: 1;\n  background-color: black; }\n  .game-over .over {\n    text-align: center;\n    font-size: 24px;\n    color: white; }\n\n.invisible {\n  display: none; }\n", ""]);
+exports.push([module.i, "* {\n  box-sizing: border-box;\n  font-family: \"Emulogic\", \"Courier New\", sans-serif;\n  padding: 0;\n  margin: 0 auto; }\n\n@font-face {\n  font-family: Emulogic;\n  src: url(" + __webpack_require__(4) + "); }\n\nbody {\n  background-color: black; }\n\n.center-flex, .start-game, .game-over {\n  display: flex;\n  justify-content: center;\n  align-items: center; }\n\n.btn {\n  margin-top: 50px;\n  font-size: 30px;\n  padding: 10px;\n  display: block; }\n\n.start-game {\n  height: 100%;\n  width: 100%;\n  background-color: black;\n  position: absolute;\n  top: 0;\n  text-align: center; }\n  .start-game .start {\n    color: white;\n    font-size: 35px;\n    width: 700px; }\n    .start-game .start h1 {\n      font-size: 50px; }\n    .start-game .start h2 {\n      font-size: 30px;\n      margin-top: 50px; }\n    .start-game .start p {\n      margin-top: 30px;\n      font-size: 12px;\n      line-height: 26px; }\n      .start-game .start p span {\n        display: inline-block;\n        font-size: 20px; }\n        .start-game .start p span.rotate {\n          margin-left: 10px;\n          transform: rotate(180deg); }\n    .start-game .start .game-mode {\n      margin-top: 10px;\n      text-align: left;\n      display: inline-block;\n      list-style: none;\n      font-size: 26px; }\n      .start-game .start .game-mode li {\n        padding: 10px; }\n        .start-game .start .game-mode li.selected {\n          text-shadow: 0 0 20px white;\n          list-style-type: square; }\n\n#board {\n  width: 640px;\n  height: 640px;\n  margin: 1em auto; }\n\n#board > div {\n  border: 1px solid black;\n  float: left;\n  width: 64px;\n  height: 64px;\n  background-color: white; }\n\nsection#scoring div {\n  width: 10em;\n  height: 5em;\n  text-align: center;\n  padding: 0.5em;\n  /*background-color: rgba(211,211,211, 0.75);\n  border: 1px solid lightgray;\n  border-radius: 1px;\n  box-shadow: 1px 1px 5px 1px lightgray;*/\n  font-size: 20px;\n  margin: 0.5em auto;\n  color: white; }\n\n.board {\n  height: 600px;\n  width: 600px; }\n  .board div {\n    float: left;\n    display: inline-block;\n    height: 60px;\n    width: 60px;\n    background-color: gray;\n    border: 1px solid black;\n    box-sizing: border-box; }\n    .board div.cat {\n      background-image: url(" + __webpack_require__(5) + ");\n      background-size: contain; }\n    .board div.hamborgir {\n      background-image: url(" + __webpack_require__(6) + ");\n      background-size: contain; }\n    .board div.doge {\n      background-image: url(" + __webpack_require__(7) + ");\n      background-size: contain;\n      background-repeat: no-repeat; }\n\n.game-over {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  z-index: 1;\n  background-color: black; }\n  .game-over .over {\n    text-align: center;\n    font-size: 24px;\n    color: white; }\n\n.invisible {\n  display: none; }\n", ""]);
 
 // exports
 
