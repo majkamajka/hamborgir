@@ -24,6 +24,7 @@ body {
   margin-top: 50px;
   font-size: 30px;
   padding: 10px;
+  display: block;
 }
 
 .start-game {
@@ -32,11 +33,25 @@ body {
   width: 100%;
   background-color: black;
   position: absolute;
+  top: 0;
   text-align: center;
   .start {
     color: white;
     font-size: 35px;
     width: 700px;
+    .game-mode {
+      margin-top: 20px;
+      text-align: left;
+      display: inline-block;
+      list-style: none;
+      li {
+        padding: 10px;
+        &.selected {
+          text-shadow: 0 0 20px white;
+          list-style-type: square;
+        }
+      }
+    }
   }
 }
 

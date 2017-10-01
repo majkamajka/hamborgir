@@ -7,9 +7,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const startAudio = new Audio('sounds/start.wav');
   const dogeAudio = new Audio('sounds/bark.wav');
   const hamborgirAudio = new Audio('sounds/coin.wav');
+  const selectAudio = new Audio('sounds/select.wav');
   let doges  = [];
   let gameSpeed = 250;
   let gameOn = true;
+  const gameModes = document.querySelectorAll('.game-mode li');
+  const runMode = document.querySelector('#run-mode');
+  const dogeMode = document.querySelector('#doge-mode');
+  let selectMenu = true;
+
 
   class Cat {
     constructor() {
@@ -41,7 +47,6 @@ document.addEventListener('DOMContentLoaded', () => {
       this.score = 0;
       this.interval = 1000;
       this.dogeIndexes = [];
-      console.log(this);
     }
 
     getIndex(x, y) {
@@ -70,7 +75,6 @@ document.addEventListener('DOMContentLoaded', () => {
       dogeIndex = this.getIndex(this.doge.x, this.doge.y);
       catIndex = this.getIndex(this.cat.x, this.cat.y);
       hamborgirIndex = this.getIndex(this.hamborgir.x, this.hamborgir.y);
-
       if (this.dogeIndexes.includes(dogeIndex) || dogeIndex === catIndex || dogeIndex === hamborgirIndex) {
         this.showDoge();
       } else {
@@ -119,19 +123,20 @@ document.addEventListener('DOMContentLoaded', () => {
     checkHamborgirCollision() {
       hamborgirIndex = this.getIndex(this.hamborgir.x, this.hamborgir.y);
       catIndex = this.getIndex(this.cat.x, this.cat.y);
-
       if (catIndex === hamborgirIndex) {
         hamborgirAudio.play();
         this.board[hamborgirIndex].classList.remove('hamborgir');
         this.score += 1;
         document.querySelector('#score').innerText = this.score;
         this.hamborgir = new Hamborgir();
-        if (this.score % 3 === 0) {
+
+        if (dogeMode.classList.contains('selected') && this.score % 3 === 0) {
           this.showDoge();
         }
+
         this.showHamborgir();
 
-        if (this.score > 0 && this.score % 3 === 0) {
+        if (runMode.classList.contains('selected') && this.score > 0 && this.score % 3 === 0) {
           gameSpeed -= 10;
         }
       }
@@ -164,7 +169,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const catTimeout = function() {
         that.hideVisibleCat();
         that.moveCat();
-        console.log(gameSpeed);
         if (gameOn === true) {
           setTimeout(catTimeout, gameSpeed);
         }
@@ -176,8 +180,6 @@ document.addEventListener('DOMContentLoaded', () => {
       //   that.hideVisibleCat();
       //   that.moveCat();
       // }, 250);
-
-
 
     }
   }
@@ -193,8 +195,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  document.addEventListener('keydown', (e) => {
+    if ((e.which === 38 || e.which === 40) && selectMenu === true) {
+      selectAudio.play();
+      runMode.classList.toggle('selected');
+      dogeMode.classList.toggle('selected');
+    }
+  });
+
   document.querySelector('#start').addEventListener('click', (e) => {
     e.preventDefault();
+    selectMenu = false;
     document.querySelector('#start-game').classList.add('invisible');
     startAudio.play();
     const newGame = new Game();
@@ -221,7 +232,5 @@ document.addEventListener('DOMContentLoaded', () => {
       newGame.turnCat(event);
     });
   })
-
-
 
 });
