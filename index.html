@@ -1,32 +1,33 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-    <meta charset="utf-8">
-    <title>Dej mje ten hamborgir!</title>
-    <link rel='stylesheet' href='css/style.css'>
-
+  <meta charset='utf-8'>
+  <title>Dej mje ten hamborgir! level up</title>
 </head>
 
 <body>
-  <section id="start-game">
-    <div class="start">
-      <p>DEJ MJE TEN HAMBORGIR</p>
-      <button id="start">start</button>
-    </div>
+  <section id='start-game' class='start-game'>
+    <div class='start'>
+      <h1>DEJ MJE TEN HAMBORGIR</h1>
+      <h2>Game mode</h2>
 
+      <ul class='game-mode'>
+        <li id='run-mode' class='selected'>burn calories</li>
+        <li id='doge-mode'>beware of doge</li>
+      </ul>
+      <p class='instruction'>press <span>^ </span><span class='rotate'> ^</span> to choose,<br>"enter" to start game</p>
+      <!-- <button id='start' class='btn'>start</button> -->
+    </div>
   </section>
 
-  <section id='score'>
+  <section id='scoring' class='score'>
     <div>
-      <img src="images/borgir.png"> x
-      <strong>0</strong>
+      <img src='images/borgir-small.png'> x
+      <strong id='score'>0</strong>
     </div>
   </section>
 
-
-
-  <section id='board'>
+  <section id='board' class='board'>
     <div></div>
     <div></div>
     <div></div>
@@ -129,17 +130,15 @@
     <div></div>
   </section>
 
-
-  <section id='over' class='invisible'>
-    <div class="game-over">
+  <section id='over' class='game-over invisible'>
+    <div class='over'>
       <p>game over</p>
-      <p><img src="images/borgir.png"> x <span></span></p>
+      <p><img src='images/borgir-small.png'> x <span></span></p>
       <p>thank you for playing,<br>but i'm still hungry,<br>so...</p>
-      <button class="play-again">play again</button>
+      <button id='replay' class='btn'>play again</button>
     </div>
   </section>
 
   <script src='js/out.js'></script>
 </body>
-
 </html>
