@@ -1,3 +1,4 @@
 # Dej mje ten hamborgir!
 
-simple retro game made while learning JS objects - https://majkamajka.github.io/hamborgir/
+simple retro game made while learning JS objects - https://majkamajka.github.io/hamborgir/;
+upgraded to ES6
