@@ -157,9 +157,15 @@ section#scoring div {
   height: 100%;
   z-index: 1;
   background-color: black;
+  flex-direction: column;
   .over {
     text-align: center;
     font-size: 24px;
+    color: white;
+  }
+  .highscores {
+    border: 1px solid magenta;
+    width: 400px;
     color: white;
   }
 }

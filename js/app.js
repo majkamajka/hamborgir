@@ -1,6 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
   require('../sass/style.scss');
 
+
+  // Initialize Firebase
+  const config = {
+    apiKey: "AIzaSyDKXBdhLY9BlVawqs8fqA74wfilfrVfPKU",
+    authDomain: "hamborgir-scores.firebaseapp.com",
+    databaseURL: "https://hamborgir-scores.firebaseio.com",
+    projectId: "hamborgir-scores",
+    storageBucket: "hamborgir-scores.appspot.com",
+    messagingSenderId: "919591862688"
+  };
   let hamborgirIndex = 0;
   let dogeIndex = 0;
   let catIndex = 0;
@@ -16,6 +26,19 @@ document.addEventListener('DOMContentLoaded', () => {
   const runMode = document.querySelector('#run-mode');
   const dogeMode = document.querySelector('#doge-mode');
   let selectMenu = true;
+  const Firebase = firebase.initializeApp(config);
+  const highScores = document.querySelector('#scores');
+  let scoreLi;
+
+
+  Firebase.database().ref("/").on("value", (snap) => {
+    (snap.val()).map((e) => {
+      scoreLi = document.createElement("li");
+      scoreLi.innerText = `${e.name} : ${e.score}`;
+      highScores.appendChild(scoreLi);
+    });
+  });
+
 
 
   class Cat {
