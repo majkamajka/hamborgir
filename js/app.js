@@ -190,14 +190,28 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     addHighScore() {
+
       addScoreBtn.addEventListener("click", (e) => {
         e.preventDefault();
+        Firebase.database().ref('/').on('value', (snap) => {
+          return snap.val().length;
+        });
+
         const postScore = new Promise((resolve, reject) => {
           resolve(console.log(this.score));
-          //Firebase.database().ref("/" + tab.length).set(msg);
+          Firebase.database().ref("/" + 6).set({
+            name: "aaa",
+            score: 78
+          });
         });
+
         postScore.then(console.log("yyyy"))
                  .then(this.displayHighScores());
+
+
+
+
+
       })
 
     }
