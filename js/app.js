@@ -29,15 +29,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const Firebase = firebase.initializeApp(config);
   const highScores = document.querySelector('#scores');
   let scoreLi;
+  const addScoreBtn = document.querySelector('#add-score-btn');
 
 
-  Firebase.database().ref("/").on("value", (snap) => {
-    (snap.val()).map((e) => {
-      scoreLi = document.createElement("li");
-      scoreLi.innerText = `${e.name} : ${e.score}`;
-      highScores.appendChild(scoreLi);
-    });
-  });
+
 
 
 
@@ -186,7 +181,39 @@ document.addEventListener('DOMContentLoaded', () => {
         doges = document.querySelectorAll('.doge');
         doges.forEach((e) => e.classList.remove('doge'));
         gameOn = false;
+
+        this.addHighScore();
+
+
+
       }
+    }
+
+    addHighScore() {
+      addScoreBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        const postScore = new Promise((resolve, reject) => {
+          resolve(console.log(this.score));
+          //Firebase.database().ref("/" + tab.length).set(msg);
+        });
+        postScore.then(console.log("yyyy"))
+                 .then(this.displayHighScores());
+      })
+
+    }
+
+    displayHighScores() {
+      let sorted = [];
+      Firebase.database().ref("/").on("value", (snap) => {
+        let sortedScores = snap.val().sort((a, b) => {
+          return b.score - a.score;
+        });
+        sortedScores.map((e) => {
+          scoreLi = document.createElement("li");
+          scoreLi.innerText = `${e.name} : ${e.score}`;
+          highScores.appendChild(scoreLi);
+        });
+      });
     }
 
     startGame() {

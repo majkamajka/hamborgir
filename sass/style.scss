@@ -3,6 +3,7 @@
     font-family: "Emulogic", "Courier New", sans-serif;
     padding: 0;
     margin: 0 auto;
+    color: white;
 }
 
 @font-face {
@@ -25,6 +26,7 @@ body {
   font-size: 30px;
   padding: 10px;
   display: block;
+  color: black;
 }
 
 .start-game {
@@ -36,7 +38,6 @@ body {
   top: 0;
   text-align: center;
   .start {
-    color: white;
     font-size: 35px;
     width: 700px;
     h1 {
@@ -103,7 +104,6 @@ section#scoring div {
   box-shadow: 1px 1px 5px 1px lightgray;*/
   font-size: 20px;
   margin: 0.5em auto;
-  color: white;
 }
 
 
@@ -146,6 +146,13 @@ section#scoring div {
 // }
 
 
+.add-score {
+  border: 1px dashed magenta;
+  #name {
+    color: black;
+  }
+}
+
 
 
 .game-over {
@@ -161,12 +168,10 @@ section#scoring div {
   .over {
     text-align: center;
     font-size: 24px;
-    color: white;
   }
   .highscores {
     border: 1px solid magenta;
     width: 400px;
-    color: white;
   }
 }
 
