@@ -190,32 +190,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     addHighScore() {
-      function postScore() {
-        return new Promise((resolve, reject) => {
-          resolve (Firebase.database().ref("/").push({
-            name: "aaaaa",
-            score: 78
-          }));
-        });
-      }
-
-      async function ddd() {
-        const a = await postScore();
-        return a;
-      }
-
-
 
       addScoreBtn.addEventListener("click", (e) => {
         e.preventDefault();
-        ddd().then(this.displayHighScores());
+
+        Firebase.database().ref('/').once('value')
+          .then((snap) => snap.val().length)
+          .then((dbLength) => {
+            Firebase.database().ref("/" + dbLength).set({
+              name: "aaa",
+              score: 78
+  	         });
+          })
+
+        // postScore.then(console.log("yyyy"))
+        //          .then(this.displayHighScores());
+
+
       });
+
     }
 
     displayHighScores() {
       let sorted = [];
       Firebase.database().ref("/").on("value", (snap) => {
-        console.log(snap.val().toString());
+        //console.log(snap.val().toString());
         let sortedScores =snap.val().sort((a, b) => {
           return b.score - a.score;
         });
