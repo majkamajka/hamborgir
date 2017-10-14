@@ -184,42 +184,39 @@ document.addEventListener('DOMContentLoaded', () => {
 
         this.addHighScore();
 
-
-
       }
     }
 
+
+
     addHighScore() {
+      function postScore() {
+        return new Promise((resolve, reject) => {
+          resolve (Firebase.database().ref("/").push({
+            name: "aaaaa",
+            score: 78
+          }));
+        });
+      }
+
+      async function ddd() {
+        const a = await postScore();
+        return a;
+      }
+
+
 
       addScoreBtn.addEventListener("click", (e) => {
         e.preventDefault();
-        Firebase.database().ref('/').on('value', (snap) => {
-          return snap.val().length;
-        });
-
-        const postScore = new Promise((resolve, reject) => {
-          resolve(console.log(this.score));
-          Firebase.database().ref("/" + 6).set({
-            name: "aaa",
-            score: 78
-          });
-        });
-
-        postScore.then(console.log("yyyy"))
-                 .then(this.displayHighScores());
-
-
-
-
-
-      })
-
+        ddd().then(this.displayHighScores());
+      });
     }
 
     displayHighScores() {
       let sorted = [];
       Firebase.database().ref("/").on("value", (snap) => {
-        let sortedScores = snap.val().sort((a, b) => {
+        console.log(snap.val().toString());
+        let sortedScores =snap.val().sort((a, b) => {
           return b.score - a.score;
         });
         sortedScores.map((e) => {
@@ -251,16 +248,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function start() {
-    startAudio.play();
-    const newGame = new Game();
-    newGame.showCat();
-    newGame.showHamborgir();
-    newGame.startGame();
-    document.addEventListener('keydown', (event) => {
-      newGame.turnCat(event);
-    });
+  function postScore() {
+    console.log("saddadasd");
   }
+
+  // function start() {
+  //   startAudio.play();
+  //   const newGame = new Game();
+  //   newGame.showCat();
+  //   newGame.showHamborgir();
+  //   newGame.startGame();
+  //   document.addEventListener('keydown', (event) => {
+  //     newGame.turnCat(event);
+  //   });
+  // }
 
   document.addEventListener('keydown', (e) => {
     if ((e.which === 38 || e.which === 40) && selectMenu === true) {
@@ -314,4 +315,23 @@ document.addEventListener('DOMContentLoaded', () => {
 //   document.addEventListener('keydown', (event) => {
 //     newGame.turnCat(event);
 //   });
+// })
+
+
+
+
+// Firebase.database().ref('/').on('value', (snap) => {
+//   return snap.val().length;
+// });
+
+//   const postScore = new Promise((resolve, reject) => {
+//     resolve(console.log(this.score));
+//     Firebase.database().ref("/5").push({
+//       name: "bbb",
+//       score: 78
+//     });
+//   });
+//
+//   postScore.then(console.log("yyyy"))
+//            .then(this.displayHighScores());
 // })
