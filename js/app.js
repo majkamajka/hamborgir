@@ -27,11 +27,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const dogeMode = document.querySelector('#doge-mode');
   let selectMenu = true;
   const Firebase = firebase.initializeApp(config);
+  let sortedScores;
   const highScores = document.querySelector('#scores');
   let scoreLi;
   const addScoreBtn = document.querySelector('#add-score-btn');
   const nameInput = document.querySelector('#name-input');
   let name;
+  let lowestHighscore;
 
 
   class Cat {
@@ -161,7 +163,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     gameOver() {
       if (this.cat.x < 0 || this.cat.x > 9 || this.cat.y < 0 || this.cat.y > 9 || this.dogeIndexes.includes(catIndex)) {
-
         clearInterval(this.startIntervalId);
         if (this.dogeIndexes.includes(catIndex)) {
           dogeAudio.play();
@@ -179,6 +180,22 @@ document.addEventListener('DOMContentLoaded', () => {
         doges = document.querySelectorAll('.doge');
         doges.forEach((e) => e.classList.remove('doge'));
         gameOn = false;
+
+        Firebase.database().ref("/").on("value", (snap) => {
+          sortedScores = snap.val().sort((a, b) => {
+            return b.score - a.score;
+          });
+          sortedScores = sortedScores.slice(0, 10);
+          lowestHighscore = sortedScores[9].score;
+          console.log(lowestHighscore);
+          sortedScores.map((e) => {
+            scoreLi = document.createElement("li");
+            scoreLi.innerText = `${e.name} : ${e.score}`;
+            highScores.appendChild(scoreLi);
+          });
+        });
+
+
         this.addHighScore();
 
       }
@@ -206,9 +223,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     displayHighScores() {
       Firebase.database().ref("/").on("value", (snap) => {
-        let sortedScores = snap.val().sort((a, b) => {
+        sortedScores = snap.val().sort((a, b) => {
           return b.score - a.score;
         });
+        sortedScores = sortedScores.slice(0, 10);
         sortedScores.map((e) => {
           scoreLi = document.createElement("li");
           scoreLi.innerText = `${e.name} : ${e.score}`;
