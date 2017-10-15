@@ -30,10 +30,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const highScores = document.querySelector('#scores');
   let scoreLi;
   const addScoreBtn = document.querySelector('#add-score-btn');
-
-
-
-
+  const nameInput = document.querySelector('#name-input');
+  let name;
 
 
   class Cat {
@@ -181,7 +179,6 @@ document.addEventListener('DOMContentLoaded', () => {
         doges = document.querySelectorAll('.doge');
         doges.forEach((e) => e.classList.remove('doge'));
         gameOn = false;
-
         this.addHighScore();
 
       }
@@ -190,32 +187,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     addHighScore() {
-
+      const currentScore = this.score;
       addScoreBtn.addEventListener("click", (e) => {
         e.preventDefault();
-
+        name = nameInput.value;
         Firebase.database().ref('/').once('value')
           .then((snap) => snap.val().length)
           .then((dbLength) => {
             Firebase.database().ref("/" + dbLength).set({
-              name: "aaa",
-              score: 78
+              name: name,
+              score: currentScore
   	         });
           })
-
-        // postScore.then(console.log("yyyy"))
-        //          .then(this.displayHighScores());
-
-
+          .then(this.displayHighScores);
       });
 
     }
 
     displayHighScores() {
-      let sorted = [];
       Firebase.database().ref("/").on("value", (snap) => {
-        //console.log(snap.val().toString());
-        let sortedScores =snap.val().sort((a, b) => {
+        let sortedScores = snap.val().sort((a, b) => {
           return b.score - a.score;
         });
         sortedScores.map((e) => {
