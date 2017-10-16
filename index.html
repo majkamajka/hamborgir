@@ -130,28 +130,39 @@
     <div></div>
   </section>
 
-  <section id='over' class='game-over invisible'>
-    <div class='add-score' id='add-score'>
-      <form>
-        <label for='name'>
-          Name: <input type='text' id='name-input' name='user-name'>
-        </label>
-        <button id='add-score-btn' class='btn' type='submit'>submit</button>
-      </form>
+
+  <section id='end-screen' class='end-screen invisible'>
+
+    <div id='highscores-wrapper' class='highscores-wrapper'>
+
+      <section id='add-score' class='add-score invisible'>
+        <h2>you've set the new high score!</h2>
+        <form>
+          <label for='name'>
+            Name: <input type='text' id='name-input' name='user-name'>
+          </label>
+          <button id='add-score-btn' class='btn' type='submit'>submit</button>
+        </form>
+      </section>
+
+      <section id='highscores' class='highscores invisible'>
+        <h1>top 10</h1>
+        <ol id='scores'>
+        </ol>
+      </section>
 
     </div>
 
-    <div class='over'>
-      <p>game over</p>
-      <p><img src='images/borgir-small.png'> x <span></span></p>
-      <p>thank you for playing,<br>but i'm still hungry,<br>so...</p>
-      <button id='replay' class='btn replay'>play again</button>
-    </div>
-    <div id='highscores' class='highscores'>
-      <ol id='scores'>
+    <section id='over' class='game-over'>
+      <div class='over'>
+        <p>game over</p>
+        <p><img src='images/borgir-small.png'> x <span></span></p>
+        <p>thank you for playing,<br>but i'm still hungry,<br>so...</p>
+        <button id='replay' class='btn replay'>play again</button>
+      </div>
+    </section>
 
-      </ol>
-    </div>
+
   </section>
 
 
