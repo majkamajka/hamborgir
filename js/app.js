@@ -129,7 +129,11 @@ document.addEventListener('DOMContentLoaded', () => {
       } else if (this.cat.direction === 'down') {
         this.cat.y = this.cat.y + 1;
       }
-      this.gameOver();
+
+      if (this.cat.x < 0 || this.cat.x > 9 || this.cat.y < 0 || this.cat.y > 9 || this.dogeIndexes.includes(catIndex)) {
+        this.gameOver();
+      }
+
       this.checkHamborgirCollision();
       this.showCat();
     }
@@ -219,13 +223,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     gameOver() {
-      if (this.cat.x < 0 || this.cat.x > 9 || this.cat.y < 0 || this.cat.y > 9 || this.dogeIndexes.includes(catIndex)) {
-        clearInterval(this.startIntervalId);
-
-        this.gameOverAudio();
-        this.gameOverSetStuff();
-        this.gameOverFirebase();
-      }
+      clearInterval(this.startIntervalId);
+      this.gameOverAudio();
+      this.gameOverSetStuff();
+      this.gameOverFirebase();
     }
 
     addHighScore() {
@@ -239,18 +240,16 @@ document.addEventListener('DOMContentLoaded', () => {
         num2++;
         console.log("addScore " + num2);
 
-
         addScore.classList.add('invisible');
         name = nameInput.value;
+
         Firebase.database().ref('/').once('value') // to wchodzi dwa razy
           .then((snap) => snap.val().length)
           .then((dbLength) => {
-
             Firebase.database().ref("/" + dbLength).set({
               name: name,
               score: currentScore
   	         });
-
           })
           .then(() => this.displayHighScores());
       });
@@ -267,11 +266,9 @@ document.addEventListener('DOMContentLoaded', () => {
         .then((snap) => snap.val().sort((a, b) => b.score - a.score))
         .then((sortedScores) => sortedScores.slice(0, 10))
         .then((topTen) => topTen.map((e) => {
-
           scoreLi = document.createElement("li");
           scoreLi.innerText = `${e.name} : ${e.score}`;
           highScoresList.appendChild(scoreLi);
-
         }));
       highScores.classList.remove('invisible');
     }
