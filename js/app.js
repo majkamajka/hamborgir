@@ -223,6 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     gameOver() {
+      console.log("wchodzi gameOver");
       clearInterval(this.startIntervalId);
       this.gameOverAudio();
       this.gameOverSetStuff();
@@ -230,16 +231,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     addHighScore() {
-      console.log("wchodzi addHighScore");
-      let num2 = 0;
       const currentScore = this.score;
-
       addScoreBtn.addEventListener("click", (e) => {
         e.preventDefault();
-
-        num2++;
-        console.log("addScore " + num2);
-
+        console.log("submit event");
         addScore.classList.add('invisible');
         name = nameInput.value;
 
@@ -257,9 +252,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     displayHighScores() {
       console.log("wchodzi displayHighScores");
-      let num = 0;
-      num++;
-      console.log("display high score " +  num);
 
       Firebase.database().ref("/").once("value")
         //.then((snap) => console.log(snap.val()))
