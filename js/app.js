@@ -178,47 +178,53 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
+    gameOverAudio() {
+      if (this.dogeIndexes.includes(catIndex)) {
+        dogeAudio.play();
+        setTimeout(function () {
+          dogeAudio.play();
+        }, 600);
+      } else {
+        gameoverAudio.play();
+      }
+    }
+
+    gameOverSetStuff() {
+      finalScore = this.score;
+      this.cat.x = -1;
+      this.cat.y = -1;
+      document.querySelector('.hamborgir').classList.remove('hamborgir');
+      doges = document.querySelectorAll('.doge');
+      doges.forEach((e) => e.classList.remove('doge'));
+      gameOn = false;
+      endScore.innerText = this.score;
+      board.classList.add("invisible");
+      scoring.classList.add('invisible');
+      endScreen.classList.remove('invisible');
+    }
+
+    gameOverFirebase() {
+      Firebase.database().ref("/").once("value")
+        .then((snap) => (snap.val().sort((a, b) => b.score - a.score)))
+        .then((sortedScores) => sortedScores.slice(0, 10))
+        .then((topScores) => topScores[topScores.length-1].score)
+        .then((lowestHighScore) => {
+          if (finalScore >= lowestHighScore) {
+            addScore.classList.remove('invisible');
+            this.addHighScore();
+          } else {
+            this.displayHighScores();
+          }
+        })
+    }
+
     gameOver() {
-      console.log("wchodzi game over");
       if (this.cat.x < 0 || this.cat.x > 9 || this.cat.y < 0 || this.cat.y > 9 || this.dogeIndexes.includes(catIndex)) {
         clearInterval(this.startIntervalId);
 
-        if (this.dogeIndexes.includes(catIndex)) {
-          dogeAudio.play();
-          setTimeout(function () {
-            dogeAudio.play();
-          }, 600);
-        } else {
-          gameoverAudio.play();
-        }
-
-        finalScore = this.score;
-        this.cat.x = -1;
-        this.cat.y = -1;
-        document.querySelector('.hamborgir').classList.remove('hamborgir');
-        doges = document.querySelectorAll('.doge');
-        doges.forEach((e) => e.classList.remove('doge'));
-        gameOn = false;
-        endScore.innerText = this.score;
-
-        board.classList.add("invisible");
-        scoring.classList.add('invisible');
-        endScreen.classList.remove('invisible');
-
-
-
-        Firebase.database().ref("/").once("value")
-          .then((snap) => (snap.val().sort((a, b) => b.score - a.score)))
-          .then((sortedScores) => sortedScores.slice(0, 10))
-          .then((topScores) => topScores[topScores.length-1].score)
-          .then((lowestHighScore) => {
-            if (finalScore >= lowestHighScore) {
-              addScore.classList.remove('invisible');
-              this.addHighScore();
-            } else {
-              this.displayHighScores();
-            }
-          })
+        this.gameOverAudio();
+        this.gameOverSetStuff();
+        this.gameOverFirebase();
       }
     }
 
@@ -246,7 +252,7 @@ document.addEventListener('DOMContentLoaded', () => {
   	         });
 
           })
-          .then(this.displayHighScores);
+          .then(() => this.displayHighScores());
       });
     }
 
