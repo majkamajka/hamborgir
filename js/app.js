@@ -208,7 +208,7 @@ document.addEventListener('DOMContentLoaded', () => {
         Firebase.database().ref("/").once("value")
           .then((snap) => (snap.val().sort((a, b) => b.score - a.score)))
           .then((sortedScores) => sortedScores.slice(0, 10))
-          .then((topScores) => topScores[9].score)
+          .then((topScores) => topScores[topScores.length-1].score)
           .then((lowestHighScore) => {
             if (finalScore >= lowestHighScore) {
               addScore.classList.remove('invisible');
@@ -234,28 +234,37 @@ document.addEventListener('DOMContentLoaded', () => {
               score: currentScore
   	         });
           })
-          .then(this.displayHighScores);
+          .then(this.displayHighScores());
       });
     }
 
     displayHighScores() {
 
-
-
-      Firebase.database().ref("/").on("value", (snap) => {
-        sortedScores = snap.val().sort((a, b) => {
-          return b.score - a.score;
-        });
-
-        sortedScores = sortedScores.slice(0, 10);
-
-        sortedScores.map((e) => {
+      Firebase.database().ref("/").once("value")
+        .then((snap) => snap.val().sort((a, b) => b.score - a.score))
+        .then((sortedScores) => sortedScores.slice(0, 10))
+        .then((topTen) => topTen.map((e) => {
           scoreLi = document.createElement("li");
           scoreLi.innerText = `${e.name} : ${e.score}`;
           highScoresList.appendChild(scoreLi);
-        });
-        highScores.classList.remove('invisible');
-      });
+        }));
+
+      highScores.classList.remove('invisible');
+
+      // , (snap) => {
+      //   sortedScores = snap.val().sort((a, b) => {
+      //     return b.score - a.score;
+      //   });
+      //
+      //   sortedScores = sortedScores.slice(0, 10);
+      //
+      //   sortedScores.map((e) => {
+      //     scoreLi = document.createElement("li");
+      //     scoreLi.innerText = `${e.name} : ${e.score}`;
+      //     highScoresList.appendChild(scoreLi);
+      //   });
+      //   highScores.classList.remove('invisible');
+      // });
     }
 
     startGame() {
@@ -321,7 +330,7 @@ document.addEventListener('DOMContentLoaded', () => {
     highScores.classList.add('invisible');
     scoring.classList.remove('invisible');
     board.classList.remove("invisible");
-    console.log(highScoresList);
+
 //emptying scoring list
     while (highScoresList.firstChild) {
       highScoresList.removeChild(highScoresList.firstChild);
