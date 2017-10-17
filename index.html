@@ -135,7 +135,7 @@
     <div id='highscores-wrapper' class='highscores-wrapper'>
 
       <section id='add-score' class='add-score invisible'>
-        <h2>you've set the new high score!</h2>
+        <h2>you've set a new high score!</h2>
         <form>
           <label for='name'>
             Name: <input type='text' id='name-input' name='user-name'>
@@ -146,8 +146,15 @@
 
       <section id='highscores' class='highscores invisible'>
         <h1>top 10</h1>
-        <ol id='scores'>
-        </ol>
+        <table id='scores'>
+          <tr>
+            <th class='score-rank'>rank</th>
+            <th class='score-name'>name</th>
+            <th class='score-score'>score</th>
+          </tr>
+          <!-- insert scores here -->
+        </table>
+
       </section>
 
     </div>

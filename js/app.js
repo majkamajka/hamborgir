@@ -42,7 +42,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 //scores, elements etc
   let sortedScores;
-  let scoreLi;
+  let scoreTr;
+  let scoreTdRank;
+  let scoreTdName;
+  let scoreTdScore;
   let name;
   let lowestHighscore;
   let finalScore;
@@ -258,13 +261,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
     displayHighScores(gameMode) {
         Firebase.database().ref("/" + gameMode).once("value")
-        //.then((snap) => console.log(snap.val()))
         .then((snap) => snap.val().sort((a, b) => b.score - a.score))
-        .then((sortedScores) => sortedScores.slice(0, 10))
-        .then((topTen) => topTen.map((e) => {
-          scoreLi = document.createElement("li");
-          scoreLi.innerText = `${e.name} : ${e.score}`;
-          highScoresList.appendChild(scoreLi);
+        .then((sortedScores) => {
+          if (sortedScores.length > 10) {
+            return sortedScores.slice(0, 10)
+          } else {
+            return sortedScores
+          }
+        })
+        .then((topTen) => topTen.map((e, i) => {
+          scoreTr = document.createElement("tr");
+          scoreTdRank = document.createElement("td");
+          scoreTdName = document.createElement("td");
+          scoreTdScore = document.createElement("td");
+          scoreTdRank.innerText = i + 1;
+          scoreTdName.innerText = e.name;
+          scoreTdScore.innerText = e.score;
+
+          scoreTr.appendChild(scoreTdRank);
+          scoreTr.appendChild(scoreTdName);
+          scoreTr.appendChild(scoreTdScore);
+          highScoresList.appendChild(scoreTr);
+
+          //
+          // scoreLi = document.createElement("li");
+          // scoreLi.innerText = `${e.name} : ${e.score}`;
+
         }));
       highScores.classList.remove('invisible');
     }
