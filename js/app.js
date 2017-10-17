@@ -38,6 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let gameOn = true;
   let selectMenu = true;
   let addScoreBtnListener = false;
+  let gameMode;
 
 //scores, elements etc
   let sortedScores;
@@ -203,55 +204,61 @@ document.addEventListener('DOMContentLoaded', () => {
       board.classList.add("invisible");
       scoring.classList.add('invisible');
       endScreen.classList.remove('invisible');
-
-    }
-
-    displayNameInputOrScoresList() {
-      Firebase.database().ref("/").once("value")
-        .then((snap) => (snap.val().sort((a, b) => b.score - a.score)))
-        .then((sortedScores) => sortedScores.slice(0, 10))
-        .then((topScores) => topScores[topScores.length-1].score)
-        .then((lowestHighScore) => {
-          if (finalScore >= lowestHighScore) {
-            addScore.classList.remove('invisible');
-            this.addHighScore();
-          } else {
-            this.displayHighScores();
-          }
-        })
     }
 
     gameOver() {
       this.playGameOverAudio();
       this.gameOverSetStuff();
-      this.displayNameInputOrScoresList();
+
+      if (dogeMode.classList.contains('selected')) {
+        this.displayNameInputOrScoresList("doge");
+      } else {
+        this.displayNameInputOrScoresList("run");
+      }
+
     }
 
-    addHighScore() {
+    displayNameInputOrScoresList(gameMode) {
+      Firebase.database().ref("/" + gameMode).once("value")
+        //.then((snap) => console.log(snap.val()))
+        .then((snap) => snap.val())
+        .then((x) => x.sort((a, b) => b.score - a.score))
+        .then((sortedScores) => sortedScores.slice(0, 10))
+        .then((topScores) => topScores[topScores.length-1].score)
+        .then((lowestHighScore) => {
+          if (finalScore >= lowestHighScore) {
+            addScore.classList.remove('invisible');
+            this.addHighScore(gameMode);
+          } else {
+            this.displayHighScores(gameMode);
+          }
+        })
+    }
+
+    addHighScore(gameMode) {
       const currentScore = this.score;
-      name = nameInput.value;
       if (addScoreBtnListener === false) {
         addScoreBtnListener = true;
         addScoreBtn.addEventListener("click", (e) => {
           e.preventDefault();
-          Firebase.database().ref('/').once('value')
+          name = nameInput.value;
+          Firebase.database().ref('/' + gameMode).once('value')
             .then((snap) => snap.val().length)
             .then((dbLength) => {
-              Firebase.database().ref("/" + dbLength).set({
+              Firebase.database().ref("/" + gameMode + '/' + dbLength).set({
                 name: name,
                 score: currentScore
               });
             })
-            .then(() => this.displayHighScores());
+            .then(() => this.displayHighScores(gameMode));
             addScore.classList.add('invisible');
         });
       }
-
-
     }
 
-    displayHighScores() {
-        Firebase.database().ref("/").once("value")
+    displayHighScores(gameMode) {
+        Firebase.database().ref("/" + gameMode).once("value")
+        //.then((snap) => console.log(snap.val()))
         .then((snap) => snap.val().sort((a, b) => b.score - a.score))
         .then((sortedScores) => sortedScores.slice(0, 10))
         .then((topTen) => topTen.map((e) => {
@@ -264,7 +271,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     startGame() {
       const that = this;
-
       const catTimeout = function() {
         that.hideVisibleCat();
         that.moveCat();
@@ -273,7 +279,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
       setTimeout(catTimeout, gameSpeed);
-
     }
   }
 
