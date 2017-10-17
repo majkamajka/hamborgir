@@ -9022,12 +9022,12 @@ module.exports = function (regExp, replace) {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 document.addEventListener('DOMContentLoaded', function () {
   __webpack_require__(328);
+
+  var handleHighScores = __webpack_require__(337);
 
   // Initialize Firebase
   var config = {
@@ -9038,25 +9038,45 @@ document.addEventListener('DOMContentLoaded', function () {
     storageBucket: "hamborgir-scores.appspot.com",
     messagingSenderId: "919591862688"
   };
+  var Firebase = firebase.initializeApp(config);
+
+  // dom elements
+  var gameModes = document.querySelectorAll('.game-mode li');
+  var runMode = document.querySelector('#run-mode');
+  var dogeMode = document.querySelector('#doge-mode');
+  var scoring = document.querySelector('#scoring');
+  var board = document.querySelector('#board');
+  var highScoresList = document.querySelector('#scores');
+  var addScoreBtn = document.querySelector('#add-score-btn');
+  var nameInput = document.querySelector('#name-input');
+  var addScore = document.querySelector('#add-score');
+  var endScreen = document.querySelector('#end-screen');
+  var highScores = document.querySelector('#highscores');
+  var endScore = document.querySelector('#over .over span');
+
+  // game elements
   var hamborgirIndex = 0;
   var dogeIndex = 0;
   var catIndex = 0;
+  var doges = [];
+  var gameSpeed = 250;
+  var gameOn = true;
+  var selectMenu = true;
+  var addScoreBtnListener = false;
+
+  //scores, elements etc
+  var sortedScores = void 0;
+  var scoreLi = void 0;
+  var name = void 0;
+  var lowestHighscore = void 0;
+  var finalScore = void 0;
+
+  //sounds
   var startAudio = new Audio('sounds/start.wav');
   var dogeAudio = new Audio('sounds/bark.wav');
   var hamborgirAudio = new Audio('sounds/coin.wav');
   var gameoverAudio = new Audio('sounds/gameover.wav');
   var selectAudio = new Audio('sounds/select.wav');
-  var doges = [];
-  var gameSpeed = 250;
-  var gameOn = true;
-  var gameModes = document.querySelectorAll('.game-mode li');
-  var runMode = document.querySelector('#run-mode');
-  var dogeMode = document.querySelector('#doge-mode');
-  var selectMenu = true;
-  var Firebase = firebase.initializeApp(config);
-  var highScores = document.querySelector('#scores');
-  var scoreLi = void 0;
-  var addScoreBtn = document.querySelector('#add-score-btn');
 
   var Cat = function Cat() {
     _classCallCheck(this, Cat);
@@ -9142,7 +9162,11 @@ document.addEventListener('DOMContentLoaded', function () {
         } else if (this.cat.direction === 'down') {
           this.cat.y = this.cat.y + 1;
         }
-        this.gameOver();
+
+        if (this.cat.x < 0 || this.cat.x > 9 || this.cat.y < 0 || this.cat.y > 9 || this.dogeIndexes.includes(catIndex)) {
+          this.gameOver();
+        }
+
         this.checkHamborgirCollision();
         this.showCat();
       }
@@ -9181,107 +9205,115 @@ document.addEventListener('DOMContentLoaded', function () {
           this.score += 1;
           document.querySelector('#score').innerText = this.score;
           this.hamborgir = new Hamborgir();
-
           if (dogeMode.classList.contains('selected') && this.score % 3 === 0) {
             this.showDoge();
           }
-
           this.showHamborgir();
-
           if (runMode.classList.contains('selected') && this.score > 0 && this.score % 3 === 0) {
             gameSpeed -= 10;
           }
         }
       }
     }, {
+      key: 'playGameOverAudio',
+      value: function playGameOverAudio() {
+        if (this.dogeIndexes.includes(catIndex)) {
+          dogeAudio.play();
+          setTimeout(function () {
+            dogeAudio.play();
+          }, 600);
+        } else {
+          gameoverAudio.play();
+        }
+      }
+    }, {
+      key: 'gameOverSetStuff',
+      value: function gameOverSetStuff() {
+        finalScore = this.score;
+        this.cat.x = -1;
+        this.cat.y = -1;
+        document.querySelector('.hamborgir').classList.remove('hamborgir');
+        doges = document.querySelectorAll('.doge');
+        doges.forEach(function (e) {
+          return e.classList.remove('doge');
+        });
+        gameOn = false;
+        endScore.innerText = this.score;
+        board.classList.add("invisible");
+        scoring.classList.add('invisible');
+        endScreen.classList.remove('invisible');
+      }
+    }, {
+      key: 'displayNameInputOrScoresList',
+      value: function displayNameInputOrScoresList() {
+        var _this = this;
+
+        Firebase.database().ref("/").once("value").then(function (snap) {
+          return snap.val().sort(function (a, b) {
+            return b.score - a.score;
+          });
+        }).then(function (sortedScores) {
+          return sortedScores.slice(0, 10);
+        }).then(function (topScores) {
+          return topScores[topScores.length - 1].score;
+        }).then(function (lowestHighScore) {
+          if (finalScore >= lowestHighScore) {
+            addScore.classList.remove('invisible');
+            _this.addHighScore();
+          } else {
+            _this.displayHighScores();
+          }
+        });
+      }
+    }, {
       key: 'gameOver',
       value: function gameOver() {
-        if (this.cat.x < 0 || this.cat.x > 9 || this.cat.y < 0 || this.cat.y > 9 || this.dogeIndexes.includes(catIndex)) {
-
-          clearInterval(this.startIntervalId);
-          if (this.dogeIndexes.includes(catIndex)) {
-            dogeAudio.play();
-            setTimeout(function () {
-              dogeAudio.play();
-            }, 600);
-          } else {
-            gameoverAudio.play();
-          }
-          this.cat.x = -1;
-          this.cat.y = -1;
-          document.querySelector('#over').classList.remove('invisible');
-          document.querySelector('#over .over span').innerText = this.score;
-          document.querySelector('.hamborgir').classList.remove('hamborgir');
-          doges = document.querySelectorAll('.doge');
-          doges.forEach(function (e) {
-            return e.classList.remove('doge');
-          });
-          gameOn = false;
-
-          this.addHighScore();
-        }
+        this.playGameOverAudio();
+        this.gameOverSetStuff();
+        this.displayNameInputOrScoresList();
       }
     }, {
       key: 'addHighScore',
       value: function addHighScore() {
-        var ddd = function () {
-          var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-            var a;
-            return regeneratorRuntime.wrap(function _callee$(_context) {
-              while (1) {
-                switch (_context.prev = _context.next) {
-                  case 0:
-                    _context.next = 2;
-                    return postScore();
+        var _this2 = this;
 
-                  case 2:
-                    a = _context.sent;
-                    return _context.abrupt('return', a);
-
-                  case 4:
-                  case 'end':
-                    return _context.stop();
-                }
-              }
-            }, _callee, this);
-          }));
-
-          return function ddd() {
-            return _ref.apply(this, arguments);
-          };
-        }();
-
-        function postScore() {
-          return new Promise(function (resolve, reject) {
-            resolve(Firebase.database().ref("/5").push({
-              name: "bbb",
-              score: 78
-            }));
+        var currentScore = this.score;
+        name = nameInput.value;
+        if (addScoreBtnListener === false) {
+          addScoreBtnListener = true;
+          addScoreBtn.addEventListener("click", function (e) {
+            e.preventDefault();
+            Firebase.database().ref('/').once('value').then(function (snap) {
+              return snap.val().length;
+            }).then(function (dbLength) {
+              Firebase.database().ref("/" + dbLength).set({
+                name: name,
+                score: currentScore
+              });
+            }).then(function () {
+              return _this2.displayHighScores();
+            });
+            addScore.classList.add('invisible');
           });
         }
-
-        addScoreBtn.addEventListener("click", function (e) {
-          e.preventDefault();
-          ddd.then(function (v) {
-            return console.log(v);
-          });
-        });
       }
     }, {
       key: 'displayHighScores',
       value: function displayHighScores() {
-        var sorted = [];
-        Firebase.database().ref("/").on("value", function (snap) {
-          console.log(snap.val());
-          var sortedScores = snap.val().sort(function (a, b) {
+        Firebase.database().ref("/").once("value").then(function (snap) {
+          return snap.val().sort(function (a, b) {
             return b.score - a.score;
           });
-          sortedScores.map(function (e) {
+        }).then(function (sortedScores) {
+          return sortedScores.slice(0, 10);
+        }).then(function (topTen) {
+          return topTen.map(function (e) {
             scoreLi = document.createElement("li");
             scoreLi.innerText = e.name + ' : ' + e.score;
-            highScores.appendChild(scoreLi);
+            highScoresList.appendChild(scoreLi);
           });
         });
+        highScores.classList.remove('invisible');
       }
     }, {
       key: 'startGame',
@@ -9296,31 +9328,11 @@ document.addEventListener('DOMContentLoaded', function () {
           }
         };
         setTimeout(catTimeout, gameSpeed);
-
-        // this.startIntervalId = setInterval(() => {
-        //   that.hideVisibleCat();
-        //   that.moveCat();
-        // }, 250);
       }
     }]);
 
     return Game;
   }();
-
-  function postScore() {
-    console.log("saddadasd");
-  }
-
-  // function start() {
-  //   startAudio.play();
-  //   const newGame = new Game();
-  //   newGame.showCat();
-  //   newGame.showHamborgir();
-  //   newGame.startGame();
-  //   document.addEventListener('keydown', (event) => {
-  //     newGame.turnCat(event);
-  //   });
-  // }
 
   document.addEventListener('keydown', function (e) {
     if ((e.which === 38 || e.which === 40) && selectMenu === true) {
@@ -9345,7 +9357,17 @@ document.addEventListener('DOMContentLoaded', function () {
     e.preventDefault();
     gameOn = true;
     gameSpeed = 250;
-    document.querySelector('#over').classList.add('invisible');
+
+    endScreen.classList.add('invisible');
+    highScores.classList.add('invisible');
+    scoring.classList.remove('invisible');
+    board.classList.remove("invisible");
+
+    //emptying scoring list
+    while (highScoresList.firstChild) {
+      highScoresList.removeChild(highScoresList.firstChild);
+    };
+
     document.querySelector('#score').innerText = 0;
     startAudio.play();
     var newGame = new Game();
@@ -9389,6 +9411,40 @@ document.addEventListener('DOMContentLoaded', function () {
 //            .then(this.displayHighScores());
 // })
 
+
+// , (snap) => {
+//   sortedScores = snap.val().sort((a, b) => {
+//     return b.score - a.score;
+//   });
+//
+//   sortedScores = sortedScores.slice(0, 10);
+//
+//   sortedScores.map((e) => {
+//     scoreLi = document.createElement("li");
+//     scoreLi.innerText = `${e.name} : ${e.score}`;
+//     highScoresList.appendChild(scoreLi);
+//   });
+//   highScores.classList.remove('invisible');
+// });
+
+
+// this.startIntervalId = setInterval(() => {
+//   that.hideVisibleCat();
+//   that.moveCat();
+// }, 250);
+
+
+// function start() {
+//   startAudio.play();
+//   const newGame = new Game();
+//   newGame.showCat();
+//   newGame.showHamborgir();
+//   newGame.startGame();
+//   document.addEventListener('keydown', (event) => {
+//     newGame.turnCat(event);
+//   });
+// }
+
 /***/ }),
 /* 328 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -9429,7 +9485,7 @@ exports = module.exports = __webpack_require__(330)(undefined);
 
 
 // module
-exports.push([module.i, "* {\n  box-sizing: border-box;\n  font-family: \"Emulogic\", \"Courier New\", sans-serif;\n  padding: 0;\n  margin: 0 auto;\n  color: white; }\n\n@font-face {\n  font-family: Emulogic;\n  src: url(" + __webpack_require__(331) + "); }\n\nbody {\n  background-color: black; }\n\n.center-flex, .start-game, .game-over {\n  display: flex;\n  justify-content: center;\n  align-items: center; }\n\n.btn {\n  margin-top: 50px;\n  font-size: 30px;\n  padding: 10px;\n  display: block;\n  color: black; }\n\n.start-game {\n  height: 100%;\n  width: 100%;\n  background-color: black;\n  position: absolute;\n  top: 0;\n  text-align: center; }\n  .start-game .start {\n    font-size: 35px;\n    width: 700px; }\n    .start-game .start h1 {\n      font-size: 50px; }\n    .start-game .start h2 {\n      font-size: 30px;\n      margin-top: 50px; }\n    .start-game .start p {\n      margin-top: 30px;\n      font-size: 12px;\n      line-height: 26px; }\n      .start-game .start p span {\n        display: inline-block;\n        font-size: 20px; }\n        .start-game .start p span.rotate {\n          margin-left: 10px;\n          transform: rotate(180deg); }\n    .start-game .start .game-mode {\n      margin-top: 10px;\n      text-align: left;\n      display: inline-block;\n      list-style: none;\n      font-size: 26px; }\n      .start-game .start .game-mode li {\n        padding: 10px; }\n        .start-game .start .game-mode li.selected {\n          text-shadow: 0 0 20px white;\n          list-style-type: square; }\n\n#board {\n  width: 640px;\n  height: 640px;\n  margin: 1em auto; }\n\n#board > div {\n  border: 1px solid black;\n  float: left;\n  width: 64px;\n  height: 64px;\n  background-color: white; }\n\nsection#scoring div {\n  width: 10em;\n  height: 5em;\n  text-align: center;\n  padding: 0.5em;\n  /*background-color: rgba(211,211,211, 0.75);\n  border: 1px solid lightgray;\n  border-radius: 1px;\n  box-shadow: 1px 1px 5px 1px lightgray;*/\n  font-size: 20px;\n  margin: 0.5em auto; }\n\n.board {\n  height: 600px;\n  width: 600px; }\n  .board div {\n    float: left;\n    display: inline-block;\n    height: 60px;\n    width: 60px;\n    background-color: gray;\n    border: 1px solid black;\n    box-sizing: border-box; }\n    .board div.cat {\n      background-image: url(" + __webpack_require__(332) + ");\n      background-size: contain; }\n    .board div.hamborgir {\n      background-image: url(" + __webpack_require__(333) + ");\n      background-size: contain; }\n    .board div.doge {\n      background-image: url(" + __webpack_require__(334) + ");\n      background-size: contain;\n      background-repeat: no-repeat; }\n\n.add-score {\n  border: 1px dashed magenta; }\n  .add-score #name {\n    color: black; }\n\n.game-over {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  z-index: 1;\n  background-color: black;\n  flex-direction: column; }\n  .game-over .over {\n    text-align: center;\n    font-size: 24px; }\n  .game-over .highscores {\n    border: 1px solid magenta;\n    width: 400px; }\n\n.invisible {\n  display: none; }\n", ""]);
+exports.push([module.i, "* {\n  box-sizing: border-box;\n  font-family: \"Emulogic\", \"Courier New\", sans-serif;\n  padding: 0;\n  margin: 0 auto;\n  color: white; }\n\n@font-face {\n  font-family: Emulogic;\n  src: url(" + __webpack_require__(331) + "); }\n\nbody {\n  background-color: black; }\n\nh1 {\n  font-size: 30px;\n  padding-bottom: 15px; }\n\n.center-flex, .start-game, .end-screen .highscores-wrapper .add-score, .end-screen .highscores-wrapper .highscores, .end-screen .game-over {\n  display: flex;\n  justify-content: center;\n  align-items: center; }\n\n.btn {\n  margin-top: 50px;\n  font-size: 30px;\n  padding: 10px;\n  display: block;\n  color: black; }\n\n.start-game {\n  height: 100%;\n  width: 100%;\n  background-color: black;\n  position: absolute;\n  top: 0;\n  text-align: center; }\n  .start-game .start {\n    font-size: 35px;\n    width: 700px; }\n    .start-game .start h1 {\n      font-size: 50px; }\n    .start-game .start h2 {\n      font-size: 30px;\n      margin-top: 50px; }\n    .start-game .start p {\n      margin-top: 30px;\n      font-size: 12px;\n      line-height: 26px; }\n      .start-game .start p span {\n        display: inline-block;\n        font-size: 20px; }\n        .start-game .start p span.rotate {\n          margin-left: 10px;\n          transform: rotate(180deg); }\n    .start-game .start .game-mode {\n      margin-top: 10px;\n      text-align: left;\n      display: inline-block;\n      list-style: none;\n      font-size: 26px; }\n      .start-game .start .game-mode li {\n        padding: 10px; }\n        .start-game .start .game-mode li.selected {\n          text-shadow: 0 0 20px white;\n          list-style-type: square; }\n\n#board {\n  width: 640px;\n  height: 640px;\n  margin: 1em auto; }\n\n#board > div {\n  border: 1px solid black;\n  float: left;\n  width: 64px;\n  height: 64px;\n  background-color: white; }\n\nsection#scoring div {\n  width: 10em;\n  height: 5em;\n  text-align: center;\n  padding: 0.5em;\n  /*background-color: rgba(211,211,211, 0.75);\n  border: 1px solid lightgray;\n  border-radius: 1px;\n  box-shadow: 1px 1px 5px 1px lightgray;*/\n  font-size: 20px;\n  margin: 0.5em auto; }\n\n.board {\n  height: 600px;\n  width: 600px; }\n  .board div {\n    float: left;\n    display: inline-block;\n    height: 60px;\n    width: 60px;\n    background-color: gray;\n    border: 1px solid black;\n    box-sizing: border-box; }\n    .board div.cat {\n      background-image: url(" + __webpack_require__(332) + ");\n      background-size: contain; }\n    .board div.hamborgir {\n      background-image: url(" + __webpack_require__(333) + ");\n      background-size: contain; }\n    .board div.doge {\n      background-image: url(" + __webpack_require__(334) + ");\n      background-size: contain;\n      background-repeat: no-repeat; }\n\n.end-screen .highscores-wrapper {\n  height: 400px; }\n  .end-screen .highscores-wrapper .add-score {\n    width: 100%;\n    height: 100%;\n    flex-direction: column;\n    padding-top: 50px; }\n    .end-screen .highscores-wrapper .add-score #name-input {\n      color: black;\n      font-size: 20px;\n      width: 200px; }\n    .end-screen .highscores-wrapper .add-score .btn {\n      display: inline-block;\n      height: 30px;\n      font-size: 16px;\n      padding: 0 5px; }\n  .end-screen .highscores-wrapper .highscores {\n    width: 100%;\n    height: 100%;\n    flex-direction: column; }\n\n.end-screen .game-over {\n  width: 100%;\n  height: 300px;\n  background-color: black;\n  flex-direction: column; }\n  .end-screen .game-over .over {\n    text-align: center;\n    font-size: 24px; }\n  .end-screen .game-over .highscores {\n    width: 400px; }\n\n.invisible {\n  display: none !important; }\n\n.hidden {\n  visibility: hidden !important; }\n", ""]);
 
 // exports
 
@@ -9993,6 +10049,19 @@ module.exports = function (css) {
 	return fixedCss;
 };
 
+
+/***/ }),
+/* 337 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+function handleHighScores() {
+  console.log(finalScore);
+};
+
+module.exports = handleHighScores;
 
 /***/ })
 /******/ ]);
