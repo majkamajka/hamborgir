@@ -9063,6 +9063,7 @@ document.addEventListener('DOMContentLoaded', function () {
   var gameOn = true;
   var selectMenu = true;
   var addScoreBtnListener = false;
+  var gameMode = void 0;
 
   //scores, elements etc
   var sortedScores = void 0;
@@ -9244,12 +9245,28 @@ document.addEventListener('DOMContentLoaded', function () {
         endScreen.classList.remove('invisible');
       }
     }, {
+      key: 'gameOver',
+      value: function gameOver() {
+        this.playGameOverAudio();
+        this.gameOverSetStuff();
+
+        if (dogeMode.classList.contains('selected')) {
+          this.displayNameInputOrScoresList("doge");
+        } else {
+          this.displayNameInputOrScoresList("run");
+        }
+      }
+    }, {
       key: 'displayNameInputOrScoresList',
-      value: function displayNameInputOrScoresList() {
+      value: function displayNameInputOrScoresList(gameMode) {
         var _this = this;
 
-        Firebase.database().ref("/").once("value").then(function (snap) {
-          return snap.val().sort(function (a, b) {
+        Firebase.database().ref("/" + gameMode).once("value")
+        //.then((snap) => console.log(snap.val()))
+        .then(function (snap) {
+          return snap.val();
+        }).then(function (x) {
+          return x.sort(function (a, b) {
             return b.score - a.score;
           });
         }).then(function (sortedScores) {
@@ -9259,39 +9276,32 @@ document.addEventListener('DOMContentLoaded', function () {
         }).then(function (lowestHighScore) {
           if (finalScore >= lowestHighScore) {
             addScore.classList.remove('invisible');
-            _this.addHighScore();
+            _this.addHighScore(gameMode);
           } else {
-            _this.displayHighScores();
+            _this.displayHighScores(gameMode);
           }
         });
       }
     }, {
-      key: 'gameOver',
-      value: function gameOver() {
-        this.playGameOverAudio();
-        this.gameOverSetStuff();
-        this.displayNameInputOrScoresList();
-      }
-    }, {
       key: 'addHighScore',
-      value: function addHighScore() {
+      value: function addHighScore(gameMode) {
         var _this2 = this;
 
         var currentScore = this.score;
-        name = nameInput.value;
         if (addScoreBtnListener === false) {
           addScoreBtnListener = true;
           addScoreBtn.addEventListener("click", function (e) {
             e.preventDefault();
-            Firebase.database().ref('/').once('value').then(function (snap) {
+            name = nameInput.value;
+            Firebase.database().ref('/' + gameMode).once('value').then(function (snap) {
               return snap.val().length;
             }).then(function (dbLength) {
-              Firebase.database().ref("/" + dbLength).set({
+              Firebase.database().ref("/" + gameMode + '/' + dbLength).set({
                 name: name,
                 score: currentScore
               });
             }).then(function () {
-              return _this2.displayHighScores();
+              return _this2.displayHighScores(gameMode);
             });
             addScore.classList.add('invisible');
           });
@@ -9299,8 +9309,10 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     }, {
       key: 'displayHighScores',
-      value: function displayHighScores() {
-        Firebase.database().ref("/").once("value").then(function (snap) {
+      value: function displayHighScores(gameMode) {
+        Firebase.database().ref("/" + gameMode).once("value")
+        //.then((snap) => console.log(snap.val()))
+        .then(function (snap) {
           return snap.val().sort(function (a, b) {
             return b.score - a.score;
           });
@@ -9319,7 +9331,6 @@ document.addEventListener('DOMContentLoaded', function () {
       key: 'startGame',
       value: function startGame() {
         var that = this;
-
         var catTimeout = function catTimeout() {
           that.hideVisibleCat();
           that.moveCat();
