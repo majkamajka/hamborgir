@@ -1,8 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
   require('../sass/style.scss');
 
+  const handleHighScores = require("./high-scores.js");
 
-  // Initialize Firebase
+
+// Initialize Firebase
   const config = {
     apiKey: "AIzaSyDKXBdhLY9BlVawqs8fqA74wfilfrVfPKU",
     authDomain: "hamborgir-scores.firebaseapp.com",
@@ -11,34 +13,45 @@ document.addEventListener('DOMContentLoaded', () => {
     storageBucket: "hamborgir-scores.appspot.com",
     messagingSenderId: "919591862688"
   };
+  const Firebase = firebase.initializeApp(config);
+
+// dom elements
+  const gameModes = document.querySelectorAll('.game-mode li');
+  const runMode = document.querySelector('#run-mode');
+  const dogeMode = document.querySelector('#doge-mode');
+  const scoring = document.querySelector('#scoring');
+  const board = document.querySelector('#board');
+  const highScoresList = document.querySelector('#scores');
+  const addScoreBtn = document.querySelector('#add-score-btn');
+  const nameInput = document.querySelector('#name-input');
+  const addScore = document.querySelector('#add-score');
+  const endScreen = document.querySelector('#end-screen');
+  const highScores = document.querySelector('#highscores');
+  const endScore = document.querySelector('#over .over span');
+
+// game elements
   let hamborgirIndex = 0;
   let dogeIndex = 0;
   let catIndex = 0;
+  let doges  = [];
+  let gameSpeed = 250;
+  let gameOn = true;
+  let selectMenu = true;
+  let addScoreBtnListener = false;
+
+//scores, elements etc
+  let sortedScores;
+  let scoreLi;
+  let name;
+  let lowestHighscore;
+  let finalScore;
+
+//sounds
   const startAudio = new Audio('sounds/start.wav');
   const dogeAudio = new Audio('sounds/bark.wav');
   const hamborgirAudio = new Audio('sounds/coin.wav');
   const gameoverAudio = new Audio('sounds/gameover.wav');
   const selectAudio = new Audio('sounds/select.wav');
-  let doges  = [];
-  let gameSpeed = 250;
-  let gameOn = true;
-  const gameModes = document.querySelectorAll('.game-mode li');
-  const runMode = document.querySelector('#run-mode');
-  const dogeMode = document.querySelector('#doge-mode');
-  let selectMenu = true;
-  const Firebase = firebase.initializeApp(config);
-  const highScores = document.querySelector('#scores');
-  let scoreLi;
-
-
-  Firebase.database().ref("/").on("value", (snap) => {
-    (snap.val()).map((e) => {
-      scoreLi = document.createElement("li");
-      scoreLi.innerText = `${e.name} : ${e.score}`;
-      highScores.appendChild(scoreLi);
-    });
-  });
-
 
 
   class Cat {
@@ -117,7 +130,11 @@ document.addEventListener('DOMContentLoaded', () => {
       } else if (this.cat.direction === 'down') {
         this.cat.y = this.cat.y + 1;
       }
-      this.gameOver();
+
+      if (this.cat.x < 0 || this.cat.x > 9 || this.cat.y < 0 || this.cat.y > 9 || this.dogeIndexes.includes(catIndex)) {
+        this.gameOver();
+      }
+
       this.checkHamborgirCollision();
       this.showCat();
     }
@@ -153,40 +170,96 @@ document.addEventListener('DOMContentLoaded', () => {
         this.score += 1;
         document.querySelector('#score').innerText = this.score;
         this.hamborgir = new Hamborgir();
-
         if (dogeMode.classList.contains('selected') && this.score % 3 === 0) {
           this.showDoge();
         }
-
         this.showHamborgir();
-
         if (runMode.classList.contains('selected') && this.score > 0 && this.score % 3 === 0) {
           gameSpeed -= 10;
         }
       }
     }
 
-    gameOver() {
-      if (this.cat.x < 0 || this.cat.x > 9 || this.cat.y < 0 || this.cat.y > 9 || this.dogeIndexes.includes(catIndex)) {
-
-        clearInterval(this.startIntervalId);
-        if (this.dogeIndexes.includes(catIndex)) {
+    playGameOverAudio() {
+      if (this.dogeIndexes.includes(catIndex)) {
+        dogeAudio.play();
+        setTimeout(function () {
           dogeAudio.play();
-          setTimeout(function () {
-            dogeAudio.play();
-          }, 600);
-        } else {
-          gameoverAudio.play();
-        }
-        this.cat.x = -1;
-        this.cat.y = -1;
-        document.querySelector('#over').classList.remove('invisible');
-        document.querySelector('#over .over span').innerText = this.score;
-        document.querySelector('.hamborgir').classList.remove('hamborgir');
-        doges = document.querySelectorAll('.doge');
-        doges.forEach((e) => e.classList.remove('doge'));
-        gameOn = false;
+        }, 600);
+      } else {
+        gameoverAudio.play();
       }
+    }
+
+    gameOverSetStuff() {
+      finalScore = this.score;
+      this.cat.x = -1;
+      this.cat.y = -1;
+      document.querySelector('.hamborgir').classList.remove('hamborgir');
+      doges = document.querySelectorAll('.doge');
+      doges.forEach((e) => e.classList.remove('doge'));
+      gameOn = false;
+      endScore.innerText = this.score;
+      board.classList.add("invisible");
+      scoring.classList.add('invisible');
+      endScreen.classList.remove('invisible');
+
+    }
+
+    displayNameInputOrScoresList() {
+      Firebase.database().ref("/").once("value")
+        .then((snap) => (snap.val().sort((a, b) => b.score - a.score)))
+        .then((sortedScores) => sortedScores.slice(0, 10))
+        .then((topScores) => topScores[topScores.length-1].score)
+        .then((lowestHighScore) => {
+          if (finalScore >= lowestHighScore) {
+            addScore.classList.remove('invisible');
+            this.addHighScore();
+          } else {
+            this.displayHighScores();
+          }
+        })
+    }
+
+    gameOver() {
+      this.playGameOverAudio();
+      this.gameOverSetStuff();
+      this.displayNameInputOrScoresList();
+    }
+
+    addHighScore() {
+      const currentScore = this.score;
+      name = nameInput.value;
+      if (addScoreBtnListener === false) {
+        addScoreBtnListener = true;
+        addScoreBtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          Firebase.database().ref('/').once('value')
+            .then((snap) => snap.val().length)
+            .then((dbLength) => {
+              Firebase.database().ref("/" + dbLength).set({
+                name: name,
+                score: currentScore
+              });
+            })
+            .then(() => this.displayHighScores());
+            addScore.classList.add('invisible');
+        });
+      }
+
+
+    }
+
+    displayHighScores() {
+        Firebase.database().ref("/").once("value")
+        .then((snap) => snap.val().sort((a, b) => b.score - a.score))
+        .then((sortedScores) => sortedScores.slice(0, 10))
+        .then((topTen) => topTen.map((e) => {
+          scoreLi = document.createElement("li");
+          scoreLi.innerText = `${e.name} : ${e.score}`;
+          highScoresList.appendChild(scoreLi);
+        }));
+      highScores.classList.remove('invisible');
     }
 
     startGame() {
@@ -201,24 +274,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       setTimeout(catTimeout, gameSpeed);
 
-
-      // this.startIntervalId = setInterval(() => {
-      //   that.hideVisibleCat();
-      //   that.moveCat();
-      // }, 250);
-
     }
-  }
-
-  function start() {
-    startAudio.play();
-    const newGame = new Game();
-    newGame.showCat();
-    newGame.showHamborgir();
-    newGame.startGame();
-    document.addEventListener('keydown', (event) => {
-      newGame.turnCat(event);
-    });
   }
 
   document.addEventListener('keydown', (e) => {
@@ -240,13 +296,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-
-
   document.querySelector('#replay').addEventListener('click', (e) => {
     e.preventDefault();
     gameOn = true;
     gameSpeed = 250;
-    document.querySelector('#over').classList.add('invisible');
+
+    endScreen.classList.add('invisible');
+    highScores.classList.add('invisible');
+    scoring.classList.remove('invisible');
+    board.classList.remove("invisible");
+
+//emptying scoring list
+    while (highScoresList.firstChild) {
+      highScoresList.removeChild(highScoresList.firstChild);
+    };
+
     document.querySelector('#score').innerText = 0;
     startAudio.play();
     const newGame = new Game();
@@ -274,3 +338,59 @@ document.addEventListener('DOMContentLoaded', () => {
 //     newGame.turnCat(event);
 //   });
 // })
+
+
+
+
+// Firebase.database().ref('/').on('value', (snap) => {
+//   return snap.val().length;
+// });
+
+//   const postScore = new Promise((resolve, reject) => {
+//     resolve(console.log(this.score));
+//     Firebase.database().ref("/5").push({
+//       name: "bbb",
+//       score: 78
+//     });
+//   });
+//
+//   postScore.then(console.log("yyyy"))
+//            .then(this.displayHighScores());
+// })
+
+
+      // , (snap) => {
+      //   sortedScores = snap.val().sort((a, b) => {
+      //     return b.score - a.score;
+      //   });
+      //
+      //   sortedScores = sortedScores.slice(0, 10);
+      //
+      //   sortedScores.map((e) => {
+      //     scoreLi = document.createElement("li");
+      //     scoreLi.innerText = `${e.name} : ${e.score}`;
+      //     highScoresList.appendChild(scoreLi);
+      //   });
+      //   highScores.classList.remove('invisible');
+      // });
+
+
+
+
+            // this.startIntervalId = setInterval(() => {
+            //   that.hideVisibleCat();
+            //   that.moveCat();
+            // }, 250);
+
+
+
+              // function start() {
+              //   startAudio.play();
+              //   const newGame = new Game();
+              //   newGame.showCat();
+              //   newGame.showHamborgir();
+              //   newGame.startGame();
+              //   document.addEventListener('keydown', (event) => {
+              //     newGame.turnCat(event);
+              //   });
+              // }
