@@ -37,6 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let gameSpeed = 250;
   let gameOn = true;
   let selectMenu = true;
+  let addScoreBtnListener = false;
 
 //scores, elements etc
   let sortedScores;
@@ -169,20 +170,17 @@ document.addEventListener('DOMContentLoaded', () => {
         this.score += 1;
         document.querySelector('#score').innerText = this.score;
         this.hamborgir = new Hamborgir();
-
         if (dogeMode.classList.contains('selected') && this.score % 3 === 0) {
           this.showDoge();
         }
-
         this.showHamborgir();
-
         if (runMode.classList.contains('selected') && this.score > 0 && this.score % 3 === 0) {
           gameSpeed -= 10;
         }
       }
     }
 
-    gameOverAudio() {
+    playGameOverAudio() {
       if (this.dogeIndexes.includes(catIndex)) {
         dogeAudio.play();
         setTimeout(function () {
@@ -205,9 +203,10 @@ document.addEventListener('DOMContentLoaded', () => {
       board.classList.add("invisible");
       scoring.classList.add('invisible');
       endScreen.classList.remove('invisible');
+
     }
 
-    gameOverFirebase() {
+    displayNameInputOrScoresList() {
       Firebase.database().ref("/").once("value")
         .then((snap) => (snap.val().sort((a, b) => b.score - a.score)))
         .then((sortedScores) => sortedScores.slice(0, 10))
@@ -223,38 +222,36 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     gameOver() {
-      console.log("wchodzi gameOver");
-      clearInterval(this.startIntervalId);
-      this.gameOverAudio();
+      this.playGameOverAudio();
       this.gameOverSetStuff();
-      this.gameOverFirebase();
+      this.displayNameInputOrScoresList();
     }
 
     addHighScore() {
       const currentScore = this.score;
-      addScoreBtn.addEventListener("click", (e) => {
-        e.preventDefault();
-        console.log("submit event");
-        addScore.classList.add('invisible');
-        name = nameInput.value;
+      name = nameInput.value;
+      if (addScoreBtnListener === false) {
+        addScoreBtnListener = true;
+        addScoreBtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          Firebase.database().ref('/').once('value')
+            .then((snap) => snap.val().length)
+            .then((dbLength) => {
+              Firebase.database().ref("/" + dbLength).set({
+                name: name,
+                score: currentScore
+              });
+            })
+            .then(() => this.displayHighScores());
+            addScore.classList.add('invisible');
+        });
+      }
 
-        Firebase.database().ref('/').once('value') // to wchodzi dwa razy
-          .then((snap) => snap.val().length)
-          .then((dbLength) => {
-            Firebase.database().ref("/" + dbLength).set({
-              name: name,
-              score: currentScore
-  	         });
-          })
-          .then(() => this.displayHighScores());
-      });
+
     }
 
     displayHighScores() {
-      console.log("wchodzi displayHighScores");
-
-      Firebase.database().ref("/").once("value")
-        //.then((snap) => console.log(snap.val()))
+        Firebase.database().ref("/").once("value")
         .then((snap) => snap.val().sort((a, b) => b.score - a.score))
         .then((sortedScores) => sortedScores.slice(0, 10))
         .then((topTen) => topTen.map((e) => {
@@ -279,7 +276,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     }
   }
-
 
   document.addEventListener('keydown', (e) => {
     if ((e.which === 38 || e.which === 40) && selectMenu === true) {
@@ -314,7 +310,6 @@ document.addEventListener('DOMContentLoaded', () => {
     while (highScoresList.firstChild) {
       highScoresList.removeChild(highScoresList.firstChild);
     };
-
 
     document.querySelector('#score').innerText = 0;
     startAudio.play();
