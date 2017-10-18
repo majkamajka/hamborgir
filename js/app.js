@@ -230,39 +230,35 @@ document.addEventListener('DOMContentLoaded', () => {
         .then((lowestHighScore) => {
           if (finalScore >= lowestHighScore) {
             addScore.classList.remove('invisible');
-            this.addHighScore(gameMode);
+            this.addHighScore(gameMode, this.score);
           } else {
             this.displayHighScores(gameMode);
           }
         })
     }
 
-    addHighScore(gameMode) {
-      const currentScore = this.score;
-      if (addScoreBtnListener === false) {
-        addScoreBtnListener = true;
-        addScoreBtn.addEventListener('click', (e) => {
-          e.preventDefault();
-          if (!(nameWarn.classList.contains('hidden'))) {
-            nameWarn.classList.add('hidden');
-          }
-          name = nameInput.value;
-          if (name.length > 0 && name.length <= 10) {
-            Firebase.database().ref('/' + gameMode).once('value')
-              .then((snap) => snap.val().length)
-              .then((dbLength) => {
-                Firebase.database().ref('/' + gameMode + '/' + dbLength).set({
-                  name: name,
-                  score: currentScore
-                });
-              })
-              .then(() => this.displayHighScores(gameMode));
-              addScore.classList.add('invisible');
-          } else {
-            nameWarn.classList.remove('hidden');
-          }
-        });
-      }
+    addHighScore(gameMode, gameScore) {
+      addScoreBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (!(nameWarn.classList.contains('hidden'))) {
+          nameWarn.classList.add('hidden');
+        }
+        name = nameInput.value;
+        if (name.length > 0 && name.length <= 10) {
+          Firebase.database().ref('/' + gameMode).once('value')
+            .then((snap) => snap.val().length)
+            .then((dbLength) => {
+              Firebase.database().ref('/' + gameMode + '/' + dbLength).set({
+                name: name,
+                score: gameScore
+              });
+            })
+            .then(() => this.displayHighScores(gameMode));
+            addScore.classList.add('invisible');
+        } else {
+          nameWarn.classList.remove('hidden');
+        }
+      }, {once: true});
     }
 
     displayHighScores(gameMode) {

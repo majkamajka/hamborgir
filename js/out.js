@@ -9278,7 +9278,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }).then(function (lowestHighScore) {
           if (finalScore >= lowestHighScore) {
             addScore.classList.remove('invisible');
-            _this.addHighScore(gameMode);
+            _this.addHighScore(gameMode, _this.score);
           } else {
             _this.displayHighScores(gameMode);
           }
@@ -9286,35 +9286,31 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     }, {
       key: 'addHighScore',
-      value: function addHighScore(gameMode) {
+      value: function addHighScore(gameMode, gameScore) {
         var _this2 = this;
 
-        var currentScore = this.score;
-        if (addScoreBtnListener === false) {
-          addScoreBtnListener = true;
-          addScoreBtn.addEventListener('click', function (e) {
-            e.preventDefault();
-            if (!nameWarn.classList.contains('hidden')) {
-              nameWarn.classList.add('hidden');
-            }
-            name = nameInput.value;
-            if (name.length > 0 && name.length <= 10) {
-              Firebase.database().ref('/' + gameMode).once('value').then(function (snap) {
-                return snap.val().length;
-              }).then(function (dbLength) {
-                Firebase.database().ref('/' + gameMode + '/' + dbLength).set({
-                  name: name,
-                  score: currentScore
-                });
-              }).then(function () {
-                return _this2.displayHighScores(gameMode);
+        addScoreBtn.addEventListener('click', function (e) {
+          e.preventDefault();
+          if (!nameWarn.classList.contains('hidden')) {
+            nameWarn.classList.add('hidden');
+          }
+          name = nameInput.value;
+          if (name.length > 0 && name.length <= 10) {
+            Firebase.database().ref('/' + gameMode).once('value').then(function (snap) {
+              return snap.val().length;
+            }).then(function (dbLength) {
+              Firebase.database().ref('/' + gameMode + '/' + dbLength).set({
+                name: name,
+                score: gameScore
               });
-              addScore.classList.add('invisible');
-            } else {
-              nameWarn.classList.remove('hidden');
-            }
-          });
-        }
+            }).then(function () {
+              return _this2.displayHighScores(gameMode);
+            });
+            addScore.classList.add('invisible');
+          } else {
+            nameWarn.classList.remove('hidden');
+          }
+        }, { once: true });
       }
     }, {
       key: 'displayHighScores',
