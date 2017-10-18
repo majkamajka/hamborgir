@@ -9031,12 +9031,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Initialize Firebase
   var config = {
-    apiKey: "AIzaSyDKXBdhLY9BlVawqs8fqA74wfilfrVfPKU",
-    authDomain: "hamborgir-scores.firebaseapp.com",
-    databaseURL: "https://hamborgir-scores.firebaseio.com",
-    projectId: "hamborgir-scores",
-    storageBucket: "hamborgir-scores.appspot.com",
-    messagingSenderId: "919591862688"
+    apiKey: 'AIzaSyDKXBdhLY9BlVawqs8fqA74wfilfrVfPKU',
+    authDomain: 'hamborgir-scores.firebaseapp.com',
+    databaseURL: 'https://hamborgir-scores.firebaseio.com',
+    projectId: 'hamborgir-scores',
+    storageBucket: 'hamborgir-scores.appspot.com',
+    messagingSenderId: '919591862688'
   };
   var Firebase = firebase.initializeApp(config);
 
@@ -9053,6 +9053,7 @@ document.addEventListener('DOMContentLoaded', function () {
   var endScreen = document.querySelector('#end-screen');
   var highScores = document.querySelector('#highscores');
   var endScore = document.querySelector('#over .over span');
+  var nameWarn = document.querySelector('#name-warn');
 
   // game elements
   var hamborgirIndex = 0;
@@ -9067,8 +9068,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
   //scores, elements etc
   var sortedScores = void 0;
-  var scoreLi = void 0;
+  var scoreTr = void 0;
+  var scoreTdRank = void 0;
+  var scoreTdName = void 0;
+  var scoreTdScore = void 0;
   var name = void 0;
+  var finalName = void 0;
   var lowestHighscore = void 0;
   var finalScore = void 0;
 
@@ -9240,7 +9245,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
         gameOn = false;
         endScore.innerText = this.score;
-        board.classList.add("invisible");
+        board.classList.add('invisible');
         scoring.classList.add('invisible');
         endScreen.classList.remove('invisible');
       }
@@ -9249,21 +9254,18 @@ document.addEventListener('DOMContentLoaded', function () {
       value: function gameOver() {
         this.playGameOverAudio();
         this.gameOverSetStuff();
-
         if (dogeMode.classList.contains('selected')) {
-          this.displayNameInputOrScoresList("doge");
+          this.displayInputOrScores('doge');
         } else {
-          this.displayNameInputOrScoresList("run");
+          this.displayInputOrScores('run');
         }
       }
     }, {
-      key: 'displayNameInputOrScoresList',
-      value: function displayNameInputOrScoresList(gameMode) {
+      key: 'displayInputOrScores',
+      value: function displayInputOrScores(gameMode) {
         var _this = this;
 
-        Firebase.database().ref("/" + gameMode).once("value")
-        //.then((snap) => console.log(snap.val()))
-        .then(function (snap) {
+        Firebase.database().ref('/' + gameMode).once('value').then(function (snap) {
           return snap.val();
         }).then(function (x) {
           return x.sort(function (a, b) {
@@ -9290,29 +9292,34 @@ document.addEventListener('DOMContentLoaded', function () {
         var currentScore = this.score;
         if (addScoreBtnListener === false) {
           addScoreBtnListener = true;
-          addScoreBtn.addEventListener("click", function (e) {
+          addScoreBtn.addEventListener('click', function (e) {
             e.preventDefault();
+            if (!nameWarn.classList.contains('hidden')) {
+              nameWarn.classList.add('hidden');
+            }
             name = nameInput.value;
-            Firebase.database().ref('/' + gameMode).once('value').then(function (snap) {
-              return snap.val().length;
-            }).then(function (dbLength) {
-              Firebase.database().ref("/" + gameMode + '/' + dbLength).set({
-                name: name,
-                score: currentScore
+            if (name.length > 0 && name.length <= 10) {
+              Firebase.database().ref('/' + gameMode).once('value').then(function (snap) {
+                return snap.val().length;
+              }).then(function (dbLength) {
+                Firebase.database().ref('/' + gameMode + '/' + dbLength).set({
+                  name: name,
+                  score: currentScore
+                });
+              }).then(function () {
+                return _this2.displayHighScores(gameMode);
               });
-            }).then(function () {
-              return _this2.displayHighScores(gameMode);
-            });
-            addScore.classList.add('invisible');
+              addScore.classList.add('invisible');
+            } else {
+              nameWarn.classList.remove('hidden');
+            }
           });
         }
       }
     }, {
       key: 'displayHighScores',
       value: function displayHighScores(gameMode) {
-        Firebase.database().ref("/" + gameMode).once("value")
-        //.then((snap) => console.log(snap.val()))
-        .then(function (snap) {
+        Firebase.database().ref('/' + gameMode).once('value').then(function (snap) {
           return snap.val().sort(function (a, b) {
             return b.score - a.score;
           });
@@ -9324,15 +9331,18 @@ document.addEventListener('DOMContentLoaded', function () {
           }
         }).then(function (topTen) {
           return topTen.map(function (e, i) {
-            var scoreTr = document.createElement("tr");
-            var scoreTdRank = document.createElement("td");
+            scoreTr = document.createElement('tr');
+            scoreTdRank = document.createElement('td');
+            scoreTdName = document.createElement('td');
+            scoreTdScore = document.createElement('td');
             scoreTdRank.innerText = i + 1;
+            finalName = e.name + ".".repeat(10 - e.name.length);
+            scoreTdName.innerText = finalName;
+            scoreTdScore.innerText = e.score;
             scoreTr.appendChild(scoreTdRank);
+            scoreTr.appendChild(scoreTdName);
+            scoreTr.appendChild(scoreTdScore);
             highScoresList.appendChild(scoreTr);
-
-            //
-            // scoreLi = document.createElement("li");
-            // scoreLi.innerText = `${e.name} : ${e.score}`;
           });
         });
         highScores.classList.remove('invisible');
@@ -9382,7 +9392,7 @@ document.addEventListener('DOMContentLoaded', function () {
     endScreen.classList.add('invisible');
     highScores.classList.add('invisible');
     scoring.classList.remove('invisible');
-    board.classList.remove("invisible");
+    board.classList.remove('invisible');
 
     //emptying scoring list
     while (highScoresList.firstChild) {
@@ -9422,13 +9432,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
 //   const postScore = new Promise((resolve, reject) => {
 //     resolve(console.log(this.score));
-//     Firebase.database().ref("/5").push({
-//       name: "bbb",
+//     Firebase.database().ref('/5').push({
+//       name: 'bbb',
 //       score: 78
 //     });
 //   });
 //
-//   postScore.then(console.log("yyyy"))
+//   postScore.then(console.log('yyyy'))
 //            .then(this.displayHighScores());
 // })
 
@@ -9441,7 +9451,7 @@ document.addEventListener('DOMContentLoaded', function () {
 //   sortedScores = sortedScores.slice(0, 10);
 //
 //   sortedScores.map((e) => {
-//     scoreLi = document.createElement("li");
+//     scoreLi = document.createElement('li');
 //     scoreLi.innerText = `${e.name} : ${e.score}`;
 //     highScoresList.appendChild(scoreLi);
 //   });
@@ -9506,7 +9516,7 @@ exports = module.exports = __webpack_require__(330)(undefined);
 
 
 // module
-exports.push([module.i, "* {\n  box-sizing: border-box;\n  font-family: \"Emulogic\", \"Courier New\", sans-serif;\n  padding: 0;\n  margin: 0 auto;\n  color: white; }\n\n@font-face {\n  font-family: Emulogic;\n  src: url(" + __webpack_require__(331) + "); }\n\nbody {\n  background-color: black; }\n\nh1 {\n  font-size: 30px;\n  padding-bottom: 15px; }\n\n.center-flex, .start-game, .end-screen .highscores-wrapper .add-score, .end-screen .highscores-wrapper .highscores, .end-screen .game-over {\n  display: flex;\n  justify-content: center;\n  align-items: center; }\n\n.btn {\n  margin-top: 50px;\n  font-size: 30px;\n  padding: 10px;\n  display: block;\n  color: black; }\n\n.start-game {\n  height: 100%;\n  width: 100%;\n  background-color: black;\n  position: absolute;\n  top: 0;\n  text-align: center; }\n  .start-game .start {\n    font-size: 35px;\n    width: 700px; }\n    .start-game .start h1 {\n      font-size: 50px; }\n    .start-game .start h2 {\n      font-size: 30px;\n      margin-top: 50px; }\n    .start-game .start p {\n      margin-top: 30px;\n      font-size: 12px;\n      line-height: 26px; }\n      .start-game .start p span {\n        display: inline-block;\n        font-size: 20px; }\n        .start-game .start p span.rotate {\n          margin-left: 10px;\n          transform: rotate(180deg); }\n    .start-game .start .game-mode {\n      margin-top: 10px;\n      text-align: left;\n      display: inline-block;\n      list-style: none;\n      font-size: 26px; }\n      .start-game .start .game-mode li {\n        padding: 10px; }\n        .start-game .start .game-mode li.selected {\n          text-shadow: 0 0 20px white;\n          list-style-type: square; }\n\n#board {\n  width: 640px;\n  height: 640px;\n  margin: 1em auto; }\n\n#board > div {\n  border: 1px solid black;\n  float: left;\n  width: 64px;\n  height: 64px;\n  background-color: white; }\n\nsection#scoring div {\n  width: 10em;\n  height: 5em;\n  text-align: center;\n  padding: 0.5em;\n  /*background-color: rgba(211,211,211, 0.75);\n  border: 1px solid lightgray;\n  border-radius: 1px;\n  box-shadow: 1px 1px 5px 1px lightgray;*/\n  font-size: 20px;\n  margin: 0.5em auto; }\n\n.board {\n  height: 600px;\n  width: 600px; }\n  .board div {\n    float: left;\n    display: inline-block;\n    height: 60px;\n    width: 60px;\n    background-color: gray;\n    border: 1px solid black;\n    box-sizing: border-box; }\n    .board div.cat {\n      background-image: url(" + __webpack_require__(332) + ");\n      background-size: contain; }\n    .board div.hamborgir {\n      background-image: url(" + __webpack_require__(333) + ");\n      background-size: contain; }\n    .board div.doge {\n      background-image: url(" + __webpack_require__(334) + ");\n      background-size: contain;\n      background-repeat: no-repeat; }\n\n.end-screen .highscores-wrapper {\n  height: 400px; }\n  .end-screen .highscores-wrapper .add-score {\n    width: 100%;\n    height: 100%;\n    flex-direction: column;\n    padding-top: 50px; }\n    .end-screen .highscores-wrapper .add-score #name-input {\n      color: black;\n      font-size: 20px;\n      width: 200px; }\n    .end-screen .highscores-wrapper .add-score .btn {\n      display: inline-block;\n      height: 30px;\n      font-size: 16px;\n      padding: 0 5px; }\n  .end-screen .highscores-wrapper .highscores {\n    width: 100%;\n    height: 100%;\n    flex-direction: column; }\n    .end-screen .highscores-wrapper .highscores table, .end-screen .highscores-wrapper .highscores tr, .end-screen .highscores-wrapper .highscores td, .end-screen .highscores-wrapper .highscores th {\n      border: 1px dashed magenta; }\n    .end-screen .highscores-wrapper .highscores .score-rank, .end-screen .highscores-wrapper .highscores .score-score {\n      width: auto; }\n    .end-screen .highscores-wrapper .highscores .score-name {\n      width: 300px; }\n\n.end-screen .game-over {\n  width: 100%;\n  height: 300px;\n  background-color: black;\n  flex-direction: column; }\n  .end-screen .game-over .over {\n    text-align: center;\n    font-size: 24px; }\n  .end-screen .game-over .highscores {\n    width: 400px; }\n\n.invisible {\n  display: none !important; }\n\n.hidden {\n  visibility: hidden !important; }\n", ""]);
+exports.push([module.i, "* {\n  box-sizing: border-box;\n  font-family: \"Emulogic\", \"Courier New\", sans-serif;\n  padding: 0;\n  margin: 0 auto;\n  color: white; }\n\n@font-face {\n  font-family: Emulogic;\n  src: url(" + __webpack_require__(331) + "); }\n\nbody {\n  background-color: black; }\n\nh1 {\n  font-size: 30px;\n  padding-bottom: 15px; }\n\n.center-flex, .start-game, .end-screen .highscores-wrapper .add-score, .end-screen .highscores-wrapper .highscores, .end-screen .game-over {\n  display: flex;\n  justify-content: center;\n  align-items: center; }\n\n.btn {\n  margin-top: 50px;\n  font-size: 30px;\n  padding: 10px;\n  display: block;\n  color: black; }\n\n.start-game {\n  height: 100%;\n  width: 100%;\n  background-color: black;\n  position: absolute;\n  top: 0;\n  text-align: center; }\n  .start-game .start {\n    font-size: 35px;\n    width: 700px; }\n    .start-game .start h1 {\n      font-size: 50px; }\n    .start-game .start h2 {\n      font-size: 30px;\n      margin-top: 50px; }\n    .start-game .start p {\n      margin-top: 30px;\n      font-size: 12px;\n      line-height: 26px; }\n      .start-game .start p span {\n        display: inline-block;\n        font-size: 20px; }\n        .start-game .start p span.rotate {\n          margin-left: 10px;\n          transform: rotate(180deg); }\n    .start-game .start .game-mode {\n      margin-top: 10px;\n      text-align: left;\n      display: inline-block;\n      list-style: none;\n      font-size: 26px; }\n      .start-game .start .game-mode li {\n        padding: 10px; }\n        .start-game .start .game-mode li.selected {\n          text-shadow: 0 0 20px white;\n          list-style-type: square; }\n\n#board {\n  width: 640px;\n  height: 640px;\n  margin: 1em auto; }\n\n#board > div {\n  border: 1px solid black;\n  float: left;\n  width: 64px;\n  height: 64px;\n  background-color: white; }\n\nsection#scoring div {\n  width: 10em;\n  height: 5em;\n  text-align: center;\n  padding: 0.5em;\n  /*background-color: rgba(211,211,211, 0.75);\n  border: 1px solid lightgray;\n  border-radius: 1px;\n  box-shadow: 1px 1px 5px 1px lightgray;*/\n  font-size: 20px;\n  margin: 0.5em auto; }\n\n.board {\n  height: 600px;\n  width: 600px; }\n  .board div {\n    float: left;\n    display: inline-block;\n    height: 60px;\n    width: 60px;\n    background-color: gray;\n    border: 1px solid black;\n    box-sizing: border-box; }\n    .board div.cat {\n      background-image: url(" + __webpack_require__(332) + ");\n      background-size: contain; }\n    .board div.hamborgir {\n      background-image: url(" + __webpack_require__(333) + ");\n      background-size: contain; }\n    .board div.doge {\n      background-image: url(" + __webpack_require__(334) + ");\n      background-size: contain;\n      background-repeat: no-repeat; }\n\n.end-screen .highscores-wrapper {\n  height: 400px; }\n  .end-screen .highscores-wrapper .add-score {\n    width: 100%;\n    height: 100%;\n    flex-direction: column;\n    padding-top: 50px; }\n    .end-screen .highscores-wrapper .add-score #name-input {\n      color: black;\n      font-size: 20px;\n      width: 200px; }\n    .end-screen .highscores-wrapper .add-score .btn {\n      display: inline-block;\n      height: 30px;\n      font-size: 16px;\n      padding: 0 5px; }\n    .end-screen .highscores-wrapper .add-score .warn {\n      margin-top: 20px;\n      font-size: 10px;\n      text-align: center; }\n  .end-screen .highscores-wrapper .highscores {\n    width: 100%;\n    height: 100%;\n    flex-direction: column; }\n    .end-screen .highscores-wrapper .highscores table {\n      text-align: left; }\n    .end-screen .highscores-wrapper .highscores th, .end-screen .highscores-wrapper .highscores td {\n      padding-right: 20px; }\n    .end-screen .highscores-wrapper .highscores th {\n      padding-bottom: 20px; }\n    .end-screen .highscores-wrapper .highscores .score-rank, .end-screen .highscores-wrapper .highscores .score-score {\n      width: auto; }\n\n.end-screen .game-over {\n  width: 100%;\n  height: 300px;\n  background-color: black;\n  flex-direction: column; }\n  .end-screen .game-over .over {\n    text-align: center;\n    font-size: 24px; }\n\n.invisible {\n  display: none !important; }\n\n.hidden {\n  visibility: hidden !important; }\n", ""]);
 
 // exports
 

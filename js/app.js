@@ -1,17 +1,17 @@
 document.addEventListener('DOMContentLoaded', () => {
   require('../sass/style.scss');
 
-  const handleHighScores = require("./high-scores.js");
+  const handleHighScores = require('./high-scores.js');
 
 
 // Initialize Firebase
   const config = {
-    apiKey: "AIzaSyDKXBdhLY9BlVawqs8fqA74wfilfrVfPKU",
-    authDomain: "hamborgir-scores.firebaseapp.com",
-    databaseURL: "https://hamborgir-scores.firebaseio.com",
-    projectId: "hamborgir-scores",
-    storageBucket: "hamborgir-scores.appspot.com",
-    messagingSenderId: "919591862688"
+    apiKey: 'AIzaSyDKXBdhLY9BlVawqs8fqA74wfilfrVfPKU',
+    authDomain: 'hamborgir-scores.firebaseapp.com',
+    databaseURL: 'https://hamborgir-scores.firebaseio.com',
+    projectId: 'hamborgir-scores',
+    storageBucket: 'hamborgir-scores.appspot.com',
+    messagingSenderId: '919591862688'
   };
   const Firebase = firebase.initializeApp(config);
 
@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const endScreen = document.querySelector('#end-screen');
   const highScores = document.querySelector('#highscores');
   const endScore = document.querySelector('#over .over span');
+  const nameWarn = document.querySelector('#name-warn');
 
 // game elements
   let hamborgirIndex = 0;
@@ -47,6 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let scoreTdName;
   let scoreTdScore;
   let name;
+  let finalName;
   let lowestHighscore;
   let finalScore;
 
@@ -204,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
       doges.forEach((e) => e.classList.remove('doge'));
       gameOn = false;
       endScore.innerText = this.score;
-      board.classList.add("invisible");
+      board.classList.add('invisible');
       scoring.classList.add('invisible');
       endScreen.classList.remove('invisible');
     }
@@ -212,18 +214,15 @@ document.addEventListener('DOMContentLoaded', () => {
     gameOver() {
       this.playGameOverAudio();
       this.gameOverSetStuff();
-
       if (dogeMode.classList.contains('selected')) {
-        this.displayNameInputOrScoresList("doge");
+        this.displayInputOrScores('doge');
       } else {
-        this.displayNameInputOrScoresList("run");
+        this.displayInputOrScores('run');
       }
-
     }
 
-    displayNameInputOrScoresList(gameMode) {
-      Firebase.database().ref("/" + gameMode).once("value")
-        //.then((snap) => console.log(snap.val()))
+    displayInputOrScores(gameMode) {
+      Firebase.database().ref('/' + gameMode).once('value')
         .then((snap) => snap.val())
         .then((x) => x.sort((a, b) => b.score - a.score))
         .then((sortedScores) => sortedScores.slice(0, 10))
@@ -242,25 +241,32 @@ document.addEventListener('DOMContentLoaded', () => {
       const currentScore = this.score;
       if (addScoreBtnListener === false) {
         addScoreBtnListener = true;
-        addScoreBtn.addEventListener("click", (e) => {
+        addScoreBtn.addEventListener('click', (e) => {
           e.preventDefault();
+          if (!(nameWarn.classList.contains('hidden'))) {
+            nameWarn.classList.add('hidden');
+          }
           name = nameInput.value;
-          Firebase.database().ref('/' + gameMode).once('value')
-            .then((snap) => snap.val().length)
-            .then((dbLength) => {
-              Firebase.database().ref("/" + gameMode + '/' + dbLength).set({
-                name: name,
-                score: currentScore
-              });
-            })
-            .then(() => this.displayHighScores(gameMode));
-            addScore.classList.add('invisible');
+          if (name.length > 0 && name.length <= 10) {
+            Firebase.database().ref('/' + gameMode).once('value')
+              .then((snap) => snap.val().length)
+              .then((dbLength) => {
+                Firebase.database().ref('/' + gameMode + '/' + dbLength).set({
+                  name: name,
+                  score: currentScore
+                });
+              })
+              .then(() => this.displayHighScores(gameMode));
+              addScore.classList.add('invisible');
+          } else {
+            nameWarn.classList.remove('hidden');
+          }
         });
       }
     }
 
     displayHighScores(gameMode) {
-        Firebase.database().ref("/" + gameMode).once("value")
+        Firebase.database().ref('/' + gameMode).once('value')
         .then((snap) => snap.val().sort((a, b) => b.score - a.score))
         .then((sortedScores) => {
           if (sortedScores.length > 10) {
@@ -270,23 +276,18 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         })
         .then((topTen) => topTen.map((e, i) => {
-          scoreTr = document.createElement("tr");
-          scoreTdRank = document.createElement("td");
-          scoreTdName = document.createElement("td");
-          scoreTdScore = document.createElement("td");
+          scoreTr = document.createElement('tr');
+          scoreTdRank = document.createElement('td');
+          scoreTdName = document.createElement('td');
+          scoreTdScore = document.createElement('td');
           scoreTdRank.innerText = i + 1;
-          scoreTdName.innerText = e.name;
+          finalName = e.name + ".".repeat(10-e.name.length);
+          scoreTdName.innerText = finalName;
           scoreTdScore.innerText = e.score;
-
           scoreTr.appendChild(scoreTdRank);
           scoreTr.appendChild(scoreTdName);
           scoreTr.appendChild(scoreTdScore);
           highScoresList.appendChild(scoreTr);
-
-          //
-          // scoreLi = document.createElement("li");
-          // scoreLi.innerText = `${e.name} : ${e.score}`;
-
         }));
       highScores.classList.remove('invisible');
     }
@@ -331,7 +332,7 @@ document.addEventListener('DOMContentLoaded', () => {
     endScreen.classList.add('invisible');
     highScores.classList.add('invisible');
     scoring.classList.remove('invisible');
-    board.classList.remove("invisible");
+    board.classList.remove('invisible');
 
 //emptying scoring list
     while (highScoresList.firstChild) {
@@ -375,13 +376,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
 //   const postScore = new Promise((resolve, reject) => {
 //     resolve(console.log(this.score));
-//     Firebase.database().ref("/5").push({
-//       name: "bbb",
+//     Firebase.database().ref('/5').push({
+//       name: 'bbb',
 //       score: 78
 //     });
 //   });
 //
-//   postScore.then(console.log("yyyy"))
+//   postScore.then(console.log('yyyy'))
 //            .then(this.displayHighScores());
 // })
 
@@ -394,7 +395,7 @@ document.addEventListener('DOMContentLoaded', () => {
       //   sortedScores = sortedScores.slice(0, 10);
       //
       //   sortedScores.map((e) => {
-      //     scoreLi = document.createElement("li");
+      //     scoreLi = document.createElement('li');
       //     scoreLi.innerText = `${e.name} : ${e.score}`;
       //     highScoresList.appendChild(scoreLi);
       //   });
