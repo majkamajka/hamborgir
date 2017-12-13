@@ -3,6 +3,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const handleHighScores = require('./high-scores.js');
 
+  Pusher.logToConsole = true;
+  
+      var pusher = new Pusher('5e3039268d124c94ac75', {
+        cluster: 'eu',
+        encrypted: true
+      });
+  
+      var channel = pusher.subscribe('my-channel');
+      channel.bind('my-event', function(data) {
+        alert("dsdsdfdsfds");
+      });
 
 // Initialize Firebase
   const config = {
@@ -59,7 +70,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const gameoverAudio = new Audio('sounds/gameover.wav');
   const selectAudio = new Audio('sounds/select.wav');
 
-
+  // Enable pusher logging - don't include this in production
+  
   class Cat {
     constructor() {
       this.x = 0;
