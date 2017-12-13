@@ -3,17 +3,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const handleHighScores = require('./high-scores.js');
 
-  Pusher.logToConsole = true;
+  var Pusher = require('pusher');
   
-      var pusher = new Pusher('5e3039268d124c94ac75', {
-        cluster: 'eu',
-        encrypted: true
-      });
+  var pusher = new Pusher({
+    appId: '444498',
+    key: '5e3039268d124c94ac75',
+    secret: '94d3412f3ac2954c0cf8',
+    cluster: 'eu',
+    encrypted: true
+  });
   
-      var channel = pusher.subscribe('my-channel');
-      channel.bind('my-event', function(data) {
-        alert("dsdsdfdsfds");
-      });
+  pusher.trigger('my-channel', 'my-event', {
+    "message": "hello world"
+  });
 
 // Initialize Firebase
   const config = {
@@ -27,7 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const Firebase = firebase.initializeApp(config);
 
 // dom elements
-  const gameModes = document.querySelectorAll('.game-mode li');
   const runMode = document.querySelector('#run-mode');
   const dogeMode = document.querySelector('#doge-mode');
   const scoring = document.querySelector('#scoring');
@@ -49,18 +50,14 @@ document.addEventListener('DOMContentLoaded', () => {
   let gameSpeed = 250;
   let gameOn = true;
   let selectMenu = true;
-  let addScoreBtnListener = false;
-  let gameMode;
 
 //scores, elements etc
-  let sortedScores;
   let scoreTr;
   let scoreTdRank;
   let scoreTdName;
   let scoreTdScore;
   let name;
   let finalName;
-  let lowestHighscore;
   let finalScore;
 
 //sounds

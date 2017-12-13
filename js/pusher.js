@@ -9,5 +9,5 @@ var pusher = new Pusher({
 });
 
 pusher.trigger('my-channel', 'my-event', {
-  "message": "hello world"
+  message: "hello world"
 });
