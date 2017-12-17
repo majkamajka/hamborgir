@@ -3,12 +3,13 @@ import ReactDOM from 'react-dom';
 
 import '../src/style/style.scss';
 
+import Board from './components/Board.jsx';
+
 class App extends React.Component {
   
   render() {
-    const x = "dsfssssssdf";
     return (
-      <p>{ x }</p>
+      <Board size='10' />
     );
   }
 }
