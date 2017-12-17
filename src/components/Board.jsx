@@ -2,13 +2,40 @@ import React, { Component } from 'react';
 
 class Board extends Component {
 
-  drawBoard() {
-    const x = [];
-    for (let i = 0; i < this.props.size * this.props.size; i++) {
-      x.push(<div key={ i }>{ i + 1 }</div>)
+  // state = {
+  //   index: 0,
+  // };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      index: 0,
     }
-    
-    return x;
+  };  
+
+  // ADD: calculate cat index
+
+  componentDidMount() {
+    setInterval(() => {
+      this.setState({
+        index: this.state.index < 100 ? this.state.index + 1 : 0,
+      })
+    }, 500)
+  }
+
+  drawBoard() {
+    const board = [];
+    for (let i = 0; i < this.props.size * this.props.size; i++) {
+      board.push(
+        <div
+          className={ i === this.state.index ? 'cat' : null }
+          key={ i }
+        >
+          { i }
+        </div>
+      )
+    }
+    return board;
   }
 
   render() {
