@@ -15,12 +15,18 @@ class Board extends Component {
 
   // ADD: calculate cat index
 
+  calculateCatposition = () => {
+    console.log('sasdsada');
+    
+  }
+
   componentDidMount() {
     setInterval(() => {
       this.setState({
         index: this.state.index < 100 ? this.state.index + 1 : 0,
       })
-    }, 500)
+    }, 500);
+    this.calculateCatposition;
   }
 
   drawBoard() {
