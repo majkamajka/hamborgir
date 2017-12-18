@@ -1,0 +1,18 @@
+{
+  "presets": [
+    ["env", {
+      "modules": false,
+      "targets": {
+        "browsers": ["last 2 versions"]
+      },
+      "useBuiltIns": true
+    }],
+    "react",
+    "stage-2"
+  ],
+  "env": {
+    "development": {
+      
+    }
+  }
+}
