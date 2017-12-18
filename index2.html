@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8'>
+  <title>Dej mje ten hamborgir! level up</title>
+</head>
+
+<body>
+  <section id='start-game' class='start-game'>
+    <div class='start'>
+      <h1>DEJ MJE TEN HAMBORGIR</h1>
+      <h2>Game mode</h2>
+      <ul class='game-mode'>
+        <li id='run-mode' class='selected'>burn calories</li>
+        <li id='doge-mode'>beware of doge</li>
+      </ul>
+      <p class='instruction'>press <span>^ </span><span class='rotate'> ^</span> to choose,<br>'enter' to start game</p>
+      <!-- <button id='start' class='btn'>start</button> -->
+    </div>
+  </section>
+
+  <section id='scoring' class='score'>
+    <div>
+      <img src='images/borgir-small.png'> x
+      <strong id='score'>0</strong>
+    </div>
+  </section>
+
+  <section id='board' class='board'>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+  </section>
+
+  <section id='end-screen' class='end-screen invisible'>
+
+    <div id='highscores-wrapper' class='highscores-wrapper'>
+
+      <section id='add-score' class='add-score invisible'>
+        <h2>you've set a new high score!</h2>
+        <form>
+          <label for='name'>
+            Name: <input type='text' id='name-input' name='user-name'>
+          </label>
+          <button id='add-score-btn' class='btn' type='submit'>submit</button>
+          <p id="name-warn" class="warn hidden">name must be 1-10 characters long</p>
+        </form>
+      </section>
+
+      <section id='highscores' class='highscores invisible'>
+        <h1>top 10</h1>
+        <table id='scores'>
+          <tr>
+            <th class='score-rank'>rank</th>
+            <th class='score-name'>name</th>
+            <th class='score-score'>score</th>
+          </tr>
+          <!-- insert scores here -->
+        </table>
+
+      </section>
+
+    </div>
+
+    <section id='over' class='game-over'>
+      <div class='over'>
+        <p>game over</p>
+        <p><img src='images/borgir-small.png'> x <span></span></p>
+        <p>thank you for playing,<br>but i'm still hungry,<br>so...</p>
+        <button id='replay' class='btn replay'>play again</button>
+      </div>
+    </section>
+  </section>
+
+<script src='https://www.gstatic.com/firebasejs/4.5.0/firebase.js'></script>
+
+  <script src='js/out.js'></script>
+</body>
+</html>

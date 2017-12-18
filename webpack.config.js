@@ -1,7 +1,9 @@
+const HtmlWebpackPlugin = require('html-webpack-plugin'); 
 module.exports = {
-  entry: ['babel-polyfill', './js/app.js'],
+  entry: ['babel-polyfill', './src/App.jsx'],
   output: {
-    filename: "./js/out.js"
+    path: __dirname + '/dist',
+    filename: 'out.js'
   },
   devServer: {
     inline: true,
@@ -10,7 +12,8 @@ module.exports = {
   },
   watch: true,
   module: {
-    rules: [{
+    rules: [
+      {
         test: /\.scss$/,
         use: [{
           loader: "style-loader" // creates style nodes from JS strings
@@ -21,13 +24,10 @@ module.exports = {
         }]
       },
       {
-        test: /\.js$/,
+        test: /\.jsx$/,
         exclude: /(node_modules|bower_components)/,
         use: {
           loader: 'babel-loader',
-          options: {
-            presets: ['env']
-          }
         }
       },
       {
@@ -42,5 +42,8 @@ module.exports = {
         ]
       }
     ]
-  }
+  },
+  plugins: [
+    new HtmlWebpackPlugin({template: './index.html'})
+  ]
 }
