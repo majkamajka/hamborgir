@@ -1,9 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { createStore } from 'redux';
+import allReducers from './reducers';
+import { Provider } from 'react-redux';
 
 import '../src/style/style.scss';
 
 import Board from './components/Board.jsx';
+
+const store = createStore(allReducers);
 
 class App extends React.Component {
   
@@ -15,6 +20,8 @@ class App extends React.Component {
 }
 
 ReactDOM.render(
-  <App />,
-  document.getElementById('app'),
+  <Provider store={ store}>
+    <App />
+  </Provider>
+  , document.getElementById('app'),
 );

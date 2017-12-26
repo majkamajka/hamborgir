@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
+import { bindActionCreators} from 'redux';
+import { connect } from 'react-redux';
+import { catIndex } from '../actions/index.js';
 
 import Cell from './Cell.jsx';
 
 class Board extends Component {
 
   state = {
-    index: 0,
+    catIndex: 0,
     //direction: 'right',
     moveX: 1,
     moveY: 0,
@@ -13,12 +16,13 @@ class Board extends Component {
     y: 1,
   };
 
-  // ADD: calculate cat index
-
-  // calculateCatPosition = () => {
- 
-  //   return 10;
-  // }
+  calculateCatPosition = () => {
+    this.setState({
+      x: this.state.x + this.state.moveX,
+      y: this.state.y + this.state.moveY,
+    });
+    this.props.catIndex(this.state.catIndex); //dlaczego to sie wykonuje po 100 razy?!
+  }
 
   setDirection = (e) => {
     if (e.keyCode == 37) {
@@ -34,19 +38,12 @@ class Board extends Component {
 
   componentDidMount() {
     const startCat = setInterval(() => {
-      console.log(this.state);
+      this.calculateCatPosition();
+      this.setState({catIndex: 10*(this.state.y-1) + this.state.x});
       
-      this.setState({
-        x: this.state.x + this.state.moveX,
-        y: this.state.y + this.state.moveY
-      });
+      
       if (this.state.x < 0 || this.state.x > 10 || this.state.y < 0 || this.state.y > 10) {
-        // console.log(this.state.x);
-        
-        // this.setState({
-        //   x: -1
-        // });
-        console.log("dupa");
+        console.log('game over');
         clearInterval(startCat);
       }
     }, 1000);
@@ -59,8 +56,8 @@ class Board extends Component {
       for (let j = 1; j <= this.props.size; j++) {
         board.push(
           <Cell
-            className={ j === this.state.x && i === this.state.y - 1? 'cat' : null } // dlaczego?! j=x i i = y, a nie na odwrot :(
-            key={ 10*i + j }
+            className={ j === this.state.x && i === this.state.y - 1 ? 'cat' : null } // dlaczego?! j=x i i = y, a nie na odwrot :(
+            id={ 10*i + j }
             content={ 10*i + j }
             x={ i }
             y={ j }
@@ -72,12 +69,23 @@ class Board extends Component {
   }
 
   render() {
+
     return (
       <section className='board' >
         { this.drawBoard() }
       </section>
     )
   }
+};
+
+function mapStateToProps(state) {
+  return {
+    catIndex: state.catIndex
+  }
 }
 
-export default Board;
+function matchDispatchToProps(dispatch) {
+  return bindActionCreators({catIndex: catIndex}, dispatch)
+}
+
+ export default connect(mapStateToProps, matchDispatchToProps)(Board);
