@@ -8,7 +8,8 @@ import Cell from './Cell.jsx';
 class Board extends Component {
 
   state = {
-    catIndex: 0,
+    catIndex: 1,
+    burgerIndex: Math.floor(Math.random() * 100) + 1,
     //direction: 'right',
     moveX: 1,
     moveY: 0,
@@ -21,7 +22,7 @@ class Board extends Component {
       x: this.state.x + this.state.moveX,
       y: this.state.y + this.state.moveY,
     });
-    this.props.catIndex(this.state.catIndex); //dlaczego to sie wykonuje po 100 razy?!
+    
   }
 
   setDirection = (e) => {
@@ -40,13 +41,13 @@ class Board extends Component {
     const startCat = setInterval(() => {
       this.calculateCatPosition();
       this.setState({catIndex: 10*(this.state.y-1) + this.state.x});
-      
+      this.props.catIndex(this.state.catIndex);
       
       if (this.state.x < 0 || this.state.x > 10 || this.state.y < 0 || this.state.y > 10) {
         console.log('game over');
-        clearInterval(startCat);
+        clearInterval(startCat); // trzeba zniknac kota
       }
-    }, 1000);
+    }, 500);
     window.addEventListener('keydown', this.setDirection );
   }
 
@@ -56,12 +57,8 @@ class Board extends Component {
       for (let j = 1; j <= this.props.size; j++) {
         board.push(
           <Cell
-            className={ j === this.state.x && i === this.state.y - 1 ? 'cat' : null } // dlaczego?! j=x i i = y, a nie na odwrot :(
-            id={ 10*i + j }
-            content={ 10*i + j }
-            x={ i }
-            y={ j }
-          />
+            burgerIndex={ this.state.burgerIndex }
+            id={ 10*i + j } />
         )
       }
     }

@@ -1,4 +1,4 @@
-export default function (state = 0, action) {
+export default function (state = 1, action) {
   //define default value ^
   switch(action.type) {
     case 'CAT_INDEX':
