@@ -13,6 +13,10 @@ class Cell extends Component {
       cellClass = 'hamborgir';
     }
 
+    if ( this.props.catIndex === this.props.burgerIndex ) {
+      console.log('jesc jedzenie'); // dlaczego wszystko sie dziej po 100 razy? :(
+      
+    }
     //dodac sprawdzanie kolizji kota z burgerem, jak jest - wylosowac nowy burgerIndex
     
     return (

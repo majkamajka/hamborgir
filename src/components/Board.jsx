@@ -42,7 +42,7 @@ class Board extends Component {
       this.calculateCatPosition();
       this.setState({catIndex: 10*(this.state.y-1) + this.state.x});
       this.props.catIndex(this.state.catIndex);
-      
+      // zmienic w ifie 10 na liczne z propsow Board
       if (this.state.x < 0 || this.state.x > 10 || this.state.y < 0 || this.state.y > 10) {
         console.log('game over');
         clearInterval(startCat); // trzeba zniknac kota
