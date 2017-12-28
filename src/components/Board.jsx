@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
-import { catIndex } from '../actions/index.js';
+import { catIndex } from '../actions/action-catIndex.js';
+import { burgerIndex } from '../actions/action-burgerIndex.js';
 
 import Cell from './Cell.jsx';
 
@@ -38,12 +39,14 @@ class Board extends Component {
   }
 
   componentDidMount() {
+    const { size } = this.props;
+    this.props.burgerIndex(this.state.burgerIndex);
     const startCat = setInterval(() => {
       this.calculateCatPosition();
       this.setState({catIndex: 10*(this.state.y-1) + this.state.x});
       this.props.catIndex(this.state.catIndex);
-      // zmienic w ifie 10 na liczne z propsow Board
-      if (this.state.x < 0 || this.state.x > 10 || this.state.y < 0 || this.state.y > 10) {
+      // to chyba bedzie zle, jak bedzie inny size. ogarnac.
+      if (this.state.x < 0 || this.state.x > size || this.state.y < 0 || this.state.y > size) {
         console.log('game over');
         clearInterval(startCat); // trzeba zniknac kota
       }
@@ -56,9 +59,8 @@ class Board extends Component {
     for (let i = 0; i < this.props.size; i++) {
       for (let j = 1; j <= this.props.size; j++) {
         board.push(
-          <Cell
-            burgerIndex={ this.state.burgerIndex }
-            id={ 10*i + j } />
+          //to id jest bez sensu
+          <Cell id={ 10*i + j } />
         )
       }
     }
@@ -68,21 +70,27 @@ class Board extends Component {
   render() {
 
     return (
-      <section className='board' >
+      <section className='board'>
         { this.drawBoard() }
       </section>
     )
   }
 };
 
+// zle ponazywane rzeczy/propsy - burgerIndexInit burgerIndex. poprawic potem.
+
 function mapStateToProps(state) {
   return {
-    catIndex: state.catIndex
+    catIndex: state.catIndex,
+    burgerIndexInit: state.burgerIndex,
   }
 }
 
 function matchDispatchToProps(dispatch) {
-  return bindActionCreators({catIndex: catIndex}, dispatch)
+  return bindActionCreators({
+    catIndex: catIndex,
+    burgerIndex: burgerIndex
+  }, dispatch)
 }
 
  export default connect(mapStateToProps, matchDispatchToProps)(Board);

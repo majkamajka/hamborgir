@@ -1,27 +1,38 @@
 import React, { Component } from 'react';
+import { bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
-import { catIndex } from '../actions/index.js';
+import { catIndex } from '../actions/action-catIndex.js';
+import { burgerIndex } from '../actions/action-burgerIndex.js';
 
 class Cell extends Component {
 
+  // burgerindex chyba niepotrzebny w reduksie, winien byc tutaj w stejcie chyba
+
+  drawBurgerIndex = (burgerIndexInit) => {
+    const newBurgerIndex = Math.floor(Math.random() * 100) + 1;
+    newBurgerIndex !== burgerIndexInit ? this.props.burgerIndex(newBurgerIndex) : this.drawBurgerIndex();
+  }
+
   render() {
     let cellClass;
+    //console.log(this.props);
+
+    const { catIndex, burgerIndexInit, id } = this.props;
     
-    if (this.props.catIndex === this.props.id) {
+    if (catIndex === id) {
       cellClass = 'cat';
-    } else if ( this.props.burgerIndex === this.props.id) {
+    } else if ( burgerIndexInit === id) {
       cellClass = 'hamborgir';
     }
 
-    if ( this.props.catIndex === this.props.burgerIndex ) {
-      console.log('jesc jedzenie'); // dlaczego wszystko sie dziej po 100 razy? :(
-      
+    if ( catIndex === burgerIndexInit ) {
+      console.log('jesc jedzenie');
+      this.drawBurgerIndex(burgerIndexInit);
     }
-    //dodac sprawdzanie kolizji kota z burgerem, jak jest - wylosowac nowy burgerIndex
     
     return (
-      <div className={ cellClass } key={ this.props.id } index={ this.props.id } >
-        {this.props.id}
+      <div className={ cellClass } key={ id } index={ id } >
+        { id }
       </div>  
     )
   }
@@ -29,8 +40,16 @@ class Cell extends Component {
 
 function mapStateToProps(state) {
   return {
-    catIndex: state.catIndex
+    catIndex: state.catIndex,
+    burgerIndexInit: state.burgerIndex
   }
 }
 
-export default connect(mapStateToProps)(Cell);
+function matchDispatchToProps(dispatch) {
+  return bindActionCreators({
+    burgerIndex: burgerIndex
+  }, dispatch)
+}
+
+
+export default connect(mapStateToProps, matchDispatchToProps)(Cell);
