@@ -3,6 +3,7 @@ import { bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
 import { catIndex } from '../actions/action-catIndex.js';
 import { burgerIndex } from '../actions/action-burgerIndex.js';
+import { score } from '../actions/action-score.js';
 
 import Cell from './Cell.jsx';
 
@@ -16,6 +17,7 @@ class Board extends Component {
     moveY: 0,
     x: 0,
     y: 1,
+    score: 0,
   };
 
   calculateCatPosition = () => {
@@ -39,8 +41,13 @@ class Board extends Component {
   }
 
   componentDidMount() {
+    console.log(this.props);
+    
+    //this.props.score i score to chyba to samo - ?
+
     const { size } = this.props;
     this.props.burgerIndex(this.state.burgerIndex);
+    this.props.score(this.state.score); // to zle, zawsze robi zero :/ updejtowac stejt. :////
     const startCat = setInterval(() => {
       this.calculateCatPosition();
       this.setState({catIndex: 10*(this.state.y-1) + this.state.x});
@@ -50,7 +57,7 @@ class Board extends Component {
         console.log('game over');
         clearInterval(startCat); // trzeba zniknac kota
       }
-    }, 500);
+    }, 200);
     window.addEventListener('keydown', this.setDirection );
   }
 
@@ -68,7 +75,6 @@ class Board extends Component {
   }
 
   render() {
-
     return (
       <section className='board'>
         { this.drawBoard() }
@@ -83,13 +89,15 @@ function mapStateToProps(state) {
   return {
     catIndex: state.catIndex,
     burgerIndexInit: state.burgerIndex,
+    score: state.score
   }
 }
 
 function matchDispatchToProps(dispatch) {
   return bindActionCreators({
     catIndex: catIndex,
-    burgerIndex: burgerIndex
+    burgerIndex: burgerIndex,
+    score: score
   }, dispatch)
 }
 
