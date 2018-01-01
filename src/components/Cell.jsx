@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
-import { catIndex } from '../actions/action-catIndex.js';
 import { burgerIndex } from '../actions/action-burgerIndex.js';
-import { score } from '../actions/action-score.js';
+import { updateScore } from '../actions/action-updateScore.js';
 // wszystkie actions w jeden plik?
 
 class Cell extends Component {
@@ -32,13 +31,14 @@ class Cell extends Component {
     if ( catIndex === burgerIndexInit ) {
       console.log('jesc jedzenie');
       this.drawBurgerIndex(burgerIndexInit);
-      this.props.updateScore(this.props.score + 1);
+      this.props.updateScore(this.props.scoreFromRedux);
     }
   }
 
   render() {
     const { catIndex, burgerIndexInit, id } = this.props;
-    this.checkCollision();
+    this.checkCollision(); // <- nie wiem co z tym :/
+
     return (
       <div 
         className={ this.cellClass(catIndex, burgerIndexInit, id) }
@@ -55,16 +55,15 @@ function mapStateToProps(state) {
   return {
     catIndex: state.catIndex,
     burgerIndexInit: state.burgerIndex,
-    score: state.score
+    scoreFromRedux: state.scoreFromRedux
   }
 }
 
 function matchDispatchToProps(dispatch) {
   return bindActionCreators({
     burgerIndex: burgerIndex,
-    updateScore: score
+    updateScore: updateScore
   }, dispatch)
 }
-
 
 export default connect(mapStateToProps, matchDispatchToProps)(Cell);

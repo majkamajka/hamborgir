@@ -1,12 +1,12 @@
 import { combineReducers } from 'redux';
 import CatIndexReducer from './reducer-catIndex';
 import BurgerIndexReducer from './reducer-burgerIndex';
-import Score from './reducer-score';
+import ScoreReducer from './reducer-score';
 
-const allReducers = combineReducers({
+const allReducers = combineReducers({ // w calej aplikacji rzeczy beda sie tak nazywac, jak tutaj
   catIndex: CatIndexReducer,
   burgerIndex: BurgerIndexReducer,
-  score: Score
+  scoreFromRedux: ScoreReducer
 });
 
 export default allReducers;

@@ -11,7 +11,6 @@ import Board from './components/Board.jsx';
 const store = createStore(allReducers);
 
 class App extends React.Component {
-  
   render() {
     return (
       <Board size='10' />
@@ -20,7 +19,7 @@ class App extends React.Component {
 }
 
 ReactDOM.render(
-  <Provider store={ store}>
+  <Provider store={ store }>
     <App />
   </Provider>
   , document.getElementById('app'),
