@@ -3,15 +3,12 @@ import { bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
 import { burgerIndex } from '../actions/action-burgerIndex.js';
 import { updateScore } from '../actions/action-updateScore.js';
+import { increaseSpeed } from '../actions/action-increaseSpeed';
+
 // wszystkie actions w jeden plik?
 
 class Cell extends Component {
-
-  // burgerindex chyba niepotrzebny w reduksie, winien byc tutaj w stejcie chyba
-
   cellClass = (catIndex, burgerIndexInit, id) => {
-    //console.log(this.props);
-    
     if (catIndex === id) {
       return 'cat';
     } else if ( burgerIndexInit === id) {
@@ -32,12 +29,15 @@ class Cell extends Component {
       console.log('jesc jedzenie');
       this.drawBurgerIndex(burgerIndexInit);
       this.props.updateScore(this.props.scoreFromRedux);
+      if ((this.props.scoreFromRedux + 1) % 3 === 0 && this.props.scoreFromRedux !== 0) { //o jeden props.score za pozno, => +1 :/
+        this.props.increaseSpeed(this.props.speed);
+      }
     }
   }
 
   render() {
     const { catIndex, burgerIndexInit, id } = this.props;
-    this.checkCollision(); // <- nie wiem co z tym :/
+    this.checkCollision(); // <- nie wiem co z tym - warning :/
 
     return (
       <div 
@@ -55,14 +55,16 @@ function mapStateToProps(state) {
   return {
     catIndex: state.catIndex,
     burgerIndexInit: state.burgerIndex,
-    scoreFromRedux: state.scoreFromRedux
+    scoreFromRedux: state.scoreFromRedux,
+    speed: state.speed
   }
 }
 
 function matchDispatchToProps(dispatch) {
   return bindActionCreators({
     burgerIndex: burgerIndex,
-    updateScore: updateScore
+    updateScore: updateScore,
+    increaseSpeed: increaseSpeed
   }, dispatch)
 }
 

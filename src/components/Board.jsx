@@ -14,7 +14,7 @@ class Board extends Component {
     moveX: 1,
     moveY: 0,
     x: 0,
-    y: 1
+    y: 1,
   };
 
   calculateCatPosition = () => {
@@ -41,17 +41,21 @@ class Board extends Component {
     //this.props.score i score to chyba to samo - ?
 
     const { size } = this.props;
-    const startCat = setInterval((e) => {
+
+    const catTimeout = () => {      
       this.calculateCatPosition();
       this.setState({catIndex: 10*(this.state.y-1) + this.state.x});
       this.props.catIndex(this.state.catIndex);
-      // to chyba bedzie zle, jak bedzie inny size. ogarnac.
-      if (this.state.x === 0 || this.state.x > size || this.state.y === 0 || this.state.y > size) {
+      if (!((this.state.x === 0 || this.state.x > size || this.state.y === 0 || this.state.y > size))) {
+        setTimeout(catTimeout, this.props.speed);
+      } else {
         console.log('game over');
-        clearInterval(startCat); // trzeba zniknac kota
       }
-    }, 200);
-    window.addEventListener('keydown', this.setDirection );
+    }
+
+    setTimeout(catTimeout, this.props.speed);
+
+    window.addEventListener('keydown', this.setDirection);
   }
 
   drawBoard() {
@@ -72,7 +76,8 @@ class Board extends Component {
       <section className='board'>
         { this.drawBoard() }
       </section>,
-      <p>score: { this.props.scoreFromRedux }</p>
+      <p>score: { this.props.scoreFromRedux }</p>,
+      <p>speed: { this.props.speed }</p>
     ]
   }
 };
@@ -81,7 +86,8 @@ class Board extends Component {
 
 function mapStateToProps(state) {
   return {
-    scoreFromRedux: state.scoreFromRedux
+    scoreFromRedux: state.scoreFromRedux,
+    speed: state.speed
   }
 }
 
